@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>GpaCalculator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" id="nav-home" class="active">Home</a>
+        <a href="#" id="nav-data">Data</a>
+    </nav>
+
+    <div id="home-page" class="page">
+        <h1>GPA CALCULATOR</h1>
+        <div class="container">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Credit</th>
+                            <th>Score</th>
+                            <th>Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody id="addPlace">
+                        <tr>
+                            <td><input type="text" placeholder="Subject 1" id="subject-1"></td>
+                            <td><input type="number" placeholder="Credit" required id="credit-1"></td>
+                            <td><input type="number" placeholder="Score" required id="score-1" oninput="updateGrade(1)"></td>
+                            <td><output id="grade-1"></output></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button id="addBtn">+</button>
+            <div class="result-container">
+                <div id="result">0.0/4.0</div>
+            </div>
+            <div class="actions">
+                <button id="calculateBtn" class="btn-primary">Calculate</button>
+                <button id="resetBtn" class="btn-secondary">Reset</button>
+                <button id="saveBtn" class="btn-secondary">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="data-page" class="page" style="display: none;">
+        <h1>SAVED RECORDS</h1>
+        <div class="container">
+            <div id="cumulative-section" style="display: none; background: linear-gradient(135deg, #4a90e2, #357abd); color: white; padding: 20px; border-radius: var(--border-radius); margin-bottom: 20px; text-align: center;">
+                <h3 style="margin: 0; opacity: 0.9; font-size: 0.9rem; text-transform: uppercase;">Cumulative GPA</h3>
+                <div id="cumulative-gpa" style="font-size: 2.5rem; font-weight: bold; margin: 5px 0;">0.00</div>
+                <p id="cumulative-count" style="margin: 0; opacity: 0.8; font-size: 0.85rem;">Based on 0 semesters</p>
+            </div>
+
+            <!-- Grade Distribution Section -->
+            <div id="chart-section" style="display: none; background: white; padding: 20px; border-radius: var(--border-radius); margin-bottom: 20px; box-shadow: var(--shadow);">
+                <h3 style="margin: 0 0 20px 0; color: #333; text-align: center; font-size: 1.1rem;">Grade Distribution</h3>
+                <div style="max-width: 300px; margin: 0 auto;">
+                    <canvas id="gradeChart"></canvas>
+                </div>
+            </div>
+            
+            <div id="empty-state" style="text-align: center; padding: 40px 20px;">
+                <div style="font-size: 50px; margin-bottom: 10px;">📊</div>
+                <h3 style="color: #666; margin-bottom: 10px;">No Records Yet</h3>
+                <p style="color: #999; font-size: 0.9rem; margin-bottom: 20px;">Calculate and save your first GPA to see your academic progress here!</p>
+                <button class="btn-primary" onclick="navHome.click()">Go to Calculator</button>
+            </div>
+
+            <div class="table-responsive">
+                <table id="saved-data-table" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Year</th>
+                            <th>Semester</th>
+                            <th>GPA</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="savedPlace">
+                        <!-- Saved data will appear here -->
+                    </tbody>
+                </table>
+            </div>
+            <button id="clearAllBtn" class="btn-secondary" style="margin-top: 20px; display: none;">Clear All</button>
+        </div>
+    </div>
+
+    <!-- Save Modal -->
+    <div id="saveModal" class="modal">
+        <div class="modal-content">
+            <h2>Save GPA</h2>
+            <div class="form-group">
+                <label for="save-year">Year:</label>
+                <select id="save-year">
+                    <option value="Year 1">Year 1</option>
+                    <option value="Year 2">Year 2</option>
+                    <option value="Year 3">Year 3</option>
+                    <option value="Year 4">Year 4</option>
+                    <option value="Year 5">Year 5</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="save-semester">Semester:</label>
+                <select id="save-semester">
+                    <option value="Semester 1">Semester 1</option>
+                    <option value="Semester 2">Semester 2</option>
+                </select>
+            </div>
+            <div id="save-warning" style="background-color: #fff5f5; border-left: 4px solid #ff4757; padding: 10px; margin-bottom: 15px; display: none;">
+                <p style="color: #ff4757; font-size: 0.9rem; margin: 0 0 10px 0;">A record for this Year and Semester already exists.</p>
+                <button id="modifyExistingBtn" class="btn-primary" style="font-size: 0.8rem; padding: 5px 10px;">Modify Existing Record</button>
+            </div>
+            <div class="modal-actions">
+                <button id="confirmSaveBtn" class="btn-primary">Save</button>
+                <button id="cancelSaveBtn" class="btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
