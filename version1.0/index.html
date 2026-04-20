@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GPA Calculator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <h1>GPA Calculator</h1>
+
+    <section class="table-wrap">
+      <table class="grades-table">
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>Credit</th>
+            <th>Score (0-100)</th>
+            <th>Letter Grade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Discrete Math</td>
+            <td>5</td>
+            <td><input type="number" min="0" max="100" id="score-discrete" data-credit="5" class="score-input"></td>
+            <td class="letter" id="letter-discrete">-</td>
+          </tr>
+          <tr>
+            <td>Database</td>
+            <td>5</td>
+            <td><input type="number" min="0" max="100" id="score-database" data-credit="5" class="score-input"></td>
+            <td class="letter" id="letter-database">-</td>
+          </tr>
+          <tr>
+            <td>Software Engineering</td>
+            <td>5</td>
+            <td><input type="number" min="0" max="100" id="score-software" data-credit="5" class="score-input"></td>
+            <td class="letter" id="letter-software">-</td>
+          </tr>
+          <tr>
+            <td>Economics</td>
+            <td>5</td>
+            <td><input type="number" min="0" max="100" id="score-economics" data-credit="5" class="score-input"></td>
+            <td class="letter" id="letter-economics">-</td>
+          </tr>
+          <tr>
+            <td>Programming (Python)</td>
+            <td>5</td>
+            <td><input type="number" min="0" max="100" id="score-programming" data-credit="5" class="score-input"></td>
+            <td class="letter" id="letter-programming">-</td>
+          </tr>
+          <tr>
+            <td>Inclusiveness</td>
+            <td>3</td>
+            <td><input type="number" min="0" max="100" id="score-inclusiveness" data-credit="3" class="score-input"></td>
+            <td class="letter" id="letter-inclusiveness">-</td>
+          </tr>
+          <tr>
+            <td>Global Trend</td>
+            <td>2</td>
+            <td><input type="number" min="0" max="100" id="score-global" data-credit="2" class="score-input"></td>
+            <td class="letter" id="letter-global">-</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <div class="controls">
+      <button id="calculate">Calculate GPA</button>
+      <button id="reset" class="secondary">Reset</button>
+    </div>
+
+    <section class="report">
+      <h2>Grade Report</h2>
+      <pre id="report-output">No calculation yet.</pre>
+      <div class="gpa-result">
+        <span>GPA:</span>
+        <span id="gpa-display">- / 4.0</span>
+      </div>
+    </section>
+
+    <div id="error" class="error" aria-live="polite"></div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
