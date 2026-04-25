@@ -9,8 +9,13 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="#" id="nav-home" class="active">Home</a>
-        <a href="#" id="nav-data">Data</a>
+        <div class="nav-links">
+            <a href="#" id="nav-home" class="active">Home</a>
+            <a href="#" id="nav-data">Data</a>
+        </div>
+        <button id="theme-toggle" class="theme-btn" title="Toggle Dark/Light Mode">
+            <span class="icon">🌙</span>
+        </button>
     </nav>
 
     <div id="home-page" class="page">
@@ -57,14 +62,6 @@
                 <p id="cumulative-count" style="margin: 0; opacity: 0.8; font-size: 0.85rem;">Based on 0 semesters</p>
             </div>
 
-            <!-- Grade Distribution Section -->
-            <div id="chart-section" style="display: none; background: white; padding: 20px; border-radius: var(--border-radius); margin-bottom: 20px; box-shadow: var(--shadow);">
-                <h3 style="margin: 0 0 20px 0; color: #333; text-align: center; font-size: 1.1rem;">Grade Distribution</h3>
-                <div style="max-width: 300px; margin: 0 auto;">
-                    <canvas id="gradeChart"></canvas>
-                </div>
-            </div>
-            
             <div id="empty-state" style="text-align: center; padding: 40px 20px;">
                 <div style="font-size: 50px; margin-bottom: 10px;">📊</div>
                 <h3 style="color: #666; margin-bottom: 10px;">No Records Yet</h3>
@@ -72,22 +69,58 @@
                 <button class="btn-primary" onclick="navHome.click()">Go to Calculator</button>
             </div>
 
-            <div class="table-responsive">
-                <table id="saved-data-table" style="display: none;">
-                    <thead>
-                        <tr>
-                            <th>Year</th>
-                            <th>Semester</th>
-                            <th>GPA</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="savedPlace">
-                        <!-- Saved data will appear here -->
-                    </tbody>
-                </table>
+            <div id="records-section" class="chart-container" style="margin-bottom: 20px; display: none;">
+                <h3 style="text-align: center; margin-top: 0;">Saved Records</h3>
+                <div class="table-responsive" style="min-width: unset;">
+                    <table id="saved-data-table" style="min-width: unset;">
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Semester</th>
+                                <th>GPA</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="savedPlace">
+                            <!-- Saved data will appear here -->
+                        </tbody>
+                    </table>
+                </div>
+                <button id="clearAllBtn" class="btn-secondary" style="margin-top: 15px; width: 100%;">Clear All</button>
             </div>
-            <button id="clearAllBtn" class="btn-secondary" style="margin-top: 20px; display: none;">Clear All</button>
+
+            <!-- Charts Section -->
+            <div id="chart-section" style="display: none; margin-bottom: 20px;">
+                <div class="chart-grid">
+
+                    <!-- Grade Distribution Pie Chart -->
+                    <div class="chart-container">
+                        <h3>Grade Distribution</h3>
+                        <div style="max-width: 250px; margin: 0 auto;">
+                            <canvas id="gradeChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- GPA Trend Chart -->
+                    <div class="chart-container">
+                        <h3>GPA Trend</h3>
+                        <canvas id="trendChart"></canvas>
+                    </div>
+
+
+                    <!-- Credit Load Chart -->
+                    <div class="chart-container">
+                        <h3>Credit Load per Semester</h3>
+                        <canvas id="creditChart"></canvas>
+                    </div>
+
+                    <!-- Avg Score Trend Chart -->
+                    <div class="chart-container">
+                        <h3>Average Score Trend</h3>
+                        <canvas id="scoreChart"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

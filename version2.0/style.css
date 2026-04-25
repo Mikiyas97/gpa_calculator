@@ -158,7 +158,7 @@ output.grade-F { color: #e74c3c; }
 }
 
 .result-container {
-    display: flex;
+    display: none;
     justify-content: center;
     margin: 20px 0;
 }

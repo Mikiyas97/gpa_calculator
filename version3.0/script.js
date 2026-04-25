@@ -30,10 +30,43 @@ const cumulativeCountDisplay = document.getElementById("cumulative-count");
 const emptyState = document.getElementById("empty-state");
 const savedDataTable = document.getElementById("saved-data-table");
 const chartSection = document.getElementById("chart-section");
+const themeToggle = document.getElementById("theme-toggle");
+const recordsSection = document.getElementById("records-section");
 
 let totalSubject = 1;
 let editingId = null;
 let gradeChart = null;
+let trendChart = null;
+let creditChart = null;
+let scoreChart = null;
+
+// Theme Logic
+function initTheme() {
+    const savedTheme = localStorage.getItem("theme") || "light";
+    document.documentElement.setAttribute("data-theme", savedTheme);
+    updateThemeIcon(savedTheme);
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+    updateThemeIcon(newTheme);
+    
+    // Refresh charts to update their colors for the new theme
+    if (dataPage.style.display !== "none") {
+        displaySavedData();
+    }
+}
+
+function updateThemeIcon(theme) {
+    const iconSpan = themeToggle.querySelector(".icon");
+    iconSpan.innerText = theme === "dark" ? "☀️" : "🌙";
+}
+
+themeToggle.addEventListener("click", toggleTheme);
 
 // Grade Logic
 function getGradePoint(score) {
@@ -50,7 +83,31 @@ function getGradePoint(score) {
     return { letter: 'F', point: 0.0, class: 'grade-F' };
 }
 
-function updateGradeChart(records) {
+function updateAllCharts(records) {
+    if (!records || records.length === 0) return;
+
+    const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+    const textColor = isDark ? "#ffffff" : "#333";
+    const gridColor = isDark ? "#333" : "#eee";
+
+    // Set global defaults for Chart.js
+    Chart.defaults.color = textColor;
+    Chart.defaults.borderColor = gridColor;
+
+    // 1. Grade Distribution (Pie Chart)
+    updateGradeDistributionChart(records, textColor);
+
+    // 2. GPA Trend (Line Chart)
+    updateGpaTrendChart(records, textColor, gridColor);
+
+    // 3. Credit Load (Bar Chart)
+    updateCreditLoadChart(records, textColor, gridColor);
+
+    // 4. Average Score Trend (Line Chart)
+    updateAvgScoreTrendChart(records, textColor, gridColor);
+}
+
+function updateGradeDistributionChart(records, textColor) {
     const counts = {
         'A+': 0, 'A': 0, 'A-': 0,
         'B+': 0, 'B': 0, 'B-': 0,
@@ -66,11 +123,8 @@ function updateGradeChart(records) {
         });
     });
 
-    // Filter out grades with 0 count to keep the chart clean
     const labels = Object.keys(counts).filter(grade => counts[grade] > 0);
     const data = labels.map(grade => counts[grade]);
-    
-    // Color mapping for grades
     const colorMap = {
         'A+': '#27ae60', 'A': '#2ecc71', 'A-': '#a2f0c1',
         'B+': '#2980b9', 'B': '#3498db', 'B-': '#85c1e9',
@@ -80,10 +134,7 @@ function updateGradeChart(records) {
     const backgroundColors = labels.map(grade => colorMap[grade]);
 
     const ctx = document.getElementById('gradeChart').getContext('2d');
-    
-    if (gradeChart) {
-        gradeChart.destroy();
-    }
+    if (gradeChart) gradeChart.destroy();
 
     gradeChart = new Chart(ctx, {
         type: 'pie',
@@ -92,30 +143,150 @@ function updateGradeChart(records) {
             datasets: [{
                 data: data,
                 backgroundColor: backgroundColors,
-                borderWidth: 1
+                borderWidth: 1,
+                borderColor: 'transparent'
             }]
         },
         options: {
             responsive: true,
             plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        boxWidth: 12,
-                        padding: 15,
-                        font: { size: 11 }
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                            const value = context.raw;
-                            const percentage = ((value / total) * 100).toFixed(1);
-                            return `${context.label}: ${value} (${percentage}%)`;
-                        }
-                    }
+                legend: { 
+                    position: 'bottom', 
+                    labels: { 
+                        boxWidth: 12, 
+                        padding: 15, 
+                        font: { size: 10 },
+                        color: textColor
+                    } 
                 }
+            }
+        }
+    });
+}
+
+function updateGpaTrendChart(records, textColor, gridColor) {
+    const labels = records.map(r => `${r.year} ${r.semester}`);
+    const data = records.map(r => parseFloat(r.gpa));
+
+    const ctx = document.getElementById('trendChart').getContext('2d');
+    if (trendChart) trendChart.destroy();
+
+    trendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'GPA',
+                data: data,
+                borderColor: '#4a90e2',
+                backgroundColor: 'rgba(74, 144, 226, 0.1)',
+                fill: true,
+                tension: 0.3,
+                pointRadius: 5,
+                pointHoverRadius: 7
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { 
+                    min: 0, 
+                    max: 4.0, 
+                    ticks: { stepSize: 0.5, color: textColor },
+                    grid: { color: gridColor }
+                },
+                x: {
+                    ticks: { color: textColor },
+                    grid: { color: gridColor }
+                }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+}
+
+function updateCreditLoadChart(records, textColor, gridColor) {
+    const labels = records.map(r => `${r.year} ${r.semester}`);
+    const data = records.map(r => {
+        return r.subjects.reduce((sum, s) => sum + parseFloat(s.credit), 0);
+    });
+
+    const ctx = document.getElementById('creditChart').getContext('2d');
+    if (creditChart) creditChart.destroy();
+
+    creditChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Credits',
+                data: data,
+                backgroundColor: '#3498db',
+                borderRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { 
+                    beginAtZero: true,
+                    ticks: { color: textColor },
+                    grid: { color: gridColor }
+                },
+                x: {
+                    ticks: { color: textColor },
+                    grid: { display: false }
+                }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+}
+
+function updateAvgScoreTrendChart(records, textColor, gridColor) {
+    const labels = records.map(r => `${r.year} ${r.semester}`);
+    const data = records.map(r => {
+        if (r.subjects.length === 0) return 0;
+        const sum = r.subjects.reduce((s, sub) => s + parseFloat(sub.score), 0);
+        return (sum / r.subjects.length).toFixed(1);
+    });
+
+    const ctx = document.getElementById('scoreChart').getContext('2d');
+    if (scoreChart) scoreChart.destroy();
+
+    scoreChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Avg Score',
+                data: data,
+                borderColor: '#e67e22',
+                backgroundColor: 'rgba(230, 126, 34, 0.1)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { 
+                    min: 0, 
+                    max: 100,
+                    ticks: { color: textColor },
+                    grid: { color: gridColor }
+                },
+                x: {
+                    ticks: { color: textColor },
+                    grid: { color: gridColor }
+                }
+            },
+            plugins: {
+                legend: { display: false }
             }
         }
     });
@@ -188,6 +359,7 @@ addBtn.addEventListener("click", (e) => {
 calculateBtn.addEventListener("click", () => {
     let gpa = calculateGPA().gpa;
     updateResultUI(gpa);
+    resultDisplay.style.display="flex";
 });
 
 function calculateGPA() {
@@ -327,8 +499,7 @@ function displaySavedData() {
 
     if (savedRecords.length === 0) {
         emptyState.style.display = "block";
-        savedDataTable.style.display = "none";
-        clearAllBtn.style.display = "none";
+        recordsSection.style.display = "none";
         cumulativeSection.style.display = "none";
         chartSection.style.display = "none";
         return;
@@ -346,8 +517,7 @@ function displaySavedData() {
     });
 
     emptyState.style.display = "none";
-    savedDataTable.style.display = "table";
-    clearAllBtn.style.display = "block";
+    recordsSection.style.display = "block";
     cumulativeSection.style.display = "block";
     chartSection.style.display = "block";
 
@@ -419,8 +589,8 @@ function displaySavedData() {
     cumulativeGpaDisplay.innerText = cumulativeGpa;
     cumulativeCountDisplay.innerText = `Based on ${savedRecords.length} semester${savedRecords.length > 1 ? 's' : ''}`;
 
-    // Update Chart
-    updateGradeChart(savedRecords);
+    // Update Charts
+    updateAllCharts(savedRecords);
 }
 
 window.deleteRecord = function(id) {
@@ -470,3 +640,4 @@ window.onclick = function(event) {
 
 // Initial display check
 displaySavedData();
+initTheme();
