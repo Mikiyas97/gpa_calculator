@@ -86,7 +86,12 @@
                         </tbody>
                     </table>
                 </div>
-                <button id="clearAllBtn" class="btn-secondary" style="margin-top: 15px; width: 100%;">Clear All</button>
+                <div class="data-actions" style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button id="exportBtn" class="btn-primary" style="flex: 1;">Export (JSON)</button>
+                    <button id="importBtn" class="btn-primary" style="flex: 1;">Import (JSON)</button>
+                    <input type="file" id="importFile" accept=".json" style="display: none;">
+                </div>
+                <button id="clearAllBtn" class="btn-secondary" style="margin-top: 10px; width: 100%;">Clear All</button>
             </div>
 
             <!-- Charts Section -->

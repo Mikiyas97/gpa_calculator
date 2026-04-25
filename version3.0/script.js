@@ -32,6 +32,9 @@ const savedDataTable = document.getElementById("saved-data-table");
 const chartSection = document.getElementById("chart-section");
 const themeToggle = document.getElementById("theme-toggle");
 const recordsSection = document.getElementById("records-section");
+const exportBtn = document.getElementById("exportBtn");
+const importBtn = document.getElementById("importBtn");
+const importFile = document.getElementById("importFile");
 
 let totalSubject = 1;
 let editingId = null;
@@ -39,6 +42,49 @@ let gradeChart = null;
 let trendChart = null;
 let creditChart = null;
 let scoreChart = null;
+
+// Import/Export Logic
+exportBtn.addEventListener("click", () => {
+    const data = localStorage.getItem("gpaRecords") || "[]";
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `gpa_records_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+});
+
+importBtn.addEventListener("click", () => {
+    importFile.click();
+});
+
+importFile.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const importedData = JSON.parse(e.target.result);
+            if (!Array.isArray(importedData)) {
+                throw new Error("Invalid format: Data should be an array.");
+            }
+            
+            if (confirm("This will overwrite your current saved data. Continue?")) {
+                localStorage.setItem("gpaRecords", JSON.stringify(importedData));
+                displaySavedData();
+                alert("Data imported successfully!");
+            }
+        } catch (err) {
+            alert("Error importing data: " + err.message);
+        }
+        importFile.value = ""; // Reset input
+    };
+    reader.readAsText(file);
+});
 
 // Theme Logic
 function initTheme() {
