@@ -86,9 +86,10 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="data-actions" style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button id="exportBtn" class="btn-primary" style="flex: 1;">Export (JSON)</button>
-                    <button id="importBtn" class="btn-primary" style="flex: 1;">Import (JSON)</button>
+                <div class="data-actions" style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                    <button id="exportBtn" class="btn-primary" style="flex: 1; min-width: 150px;">Export (JSON)</button>
+                    <button id="importBtn" class="btn-primary" style="flex: 1; min-width: 150px;">Import (JSON)</button>
+                    <button id="printBtn" class="btn-primary" style="flex: 1; min-width: 150px; background-color: var(--accent-color); border-color: var(--accent-color);" onclick="window.location.href='print.html'">Generate Transcript (PDF/Print)</button>
                     <input type="file" id="importFile" accept=".json" style="display: none;">
                 </div>
                 <button id="clearAllBtn" class="btn-secondary" style="margin-top: 10px; width: 100%;">Clear All</button>

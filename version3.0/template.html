@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>University Transcript</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+
+    .header {
+        background-color: #008055;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 8px;
+    }
+
+    th {
+        background-color: #dceb dc;
+    }
+
+    .section-title {
+        background-color: #008055;
+        color: white;
+        text-align: center;
+        font-weight: bold;
+        padding: 6px;
+        margin-top: 15px;
+    }
+
+    .light-green {
+        background-color: #dceb dc;
+        font-weight: bold;
+    }
+
+    .flex {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .photo {
+        width: 90px;
+        height: 120px;
+        border: 1px solid #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 12px;
+    }
+
+    .signature {
+        margin-top: 30px;
+    }
+
+    .line {
+        display: inline-block;
+        border-bottom: 1px solid black;
+        width: 200px;
+        margin-left: 10px;
+    }
+</style>
+
+</head>
+<body>
+
+<div id="content">
+
+    <!-- HEADER -->
+    <div class="header">
+        OFFICIAL UNIVERSITY TRANSCRIPT
+    </div>
+
+    <!-- INFO SECTION -->
+    <table>
+        <tr class="light-green">
+            <th>Student Information</th>
+            <th>University Information</th>
+        </tr>
+
+        <tr>
+            <!-- LEFT SIDE -->
+            <td>
+                <div class="flex">
+                    <div class="photo">PHOTO</div>
+
+                    <div>
+                        <p><strong>Name:</strong> Moges Abebe</p>
+                        <p><strong>Program:</strong> Software Engineering</p>
+                        <p><strong>Email:</strong> ---</p>
+                    </div>
+                </div>
+            </td>
+
+            <!-- RIGHT SIDE -->
+            <td>
+                <p><strong>University:</strong> Debre Berhan University</p>
+                <p><strong>College:</strong> Computing</p>
+                <p><strong>Department:</strong> Software Engineering</p>
+                <p><strong>Location:</strong> Debre Berhan</p>
+            </td>
+        </tr>
+    </table>
+
+    <!-- ACADEMIC RECORD -->
+    <div class="section-title">ACADEMIC RECORD</div>
+
+    <table>
+        <tr class="light-green">
+            <th>Course Title</th>
+            <th>Credit</th>
+            <th>Score</th>
+            <th>Grade</th>
+        </tr>
+
+        <tr><td colspan="4"><strong>Year 1 Semester 1 (GPA: 4.00)</strong></td></tr>
+        <tr><td>Logic</td><td>5</td><td>89</td><td>A</td></tr>
+        <tr><td>Mathematics</td><td>5</td><td>90</td><td>A+</td></tr>
+        <tr><td>Physics</td><td>5</td><td>90</td><td>A+</td></tr>
+        <tr><td>Psychology</td><td>5</td><td>90</td><td>A+</td></tr>
+        <tr><td>English</td><td>5</td><td>90</td><td>A+</td></tr>
+        <tr><td>Geography</td><td>5</td><td>90</td><td>A+</td></tr>
+
+        <tr><td colspan="4"><strong>Year 1 Semester 2 (GPA: 3.83)</strong></td></tr>
+        <tr><td>Anthropology</td><td>3</td><td>90</td><td>A+</td></tr>
+        <tr><td>Emerging Technology</td><td>5</td><td>85</td><td>A</td></tr>
+        <tr><td>Applied Mathematics</td><td>5</td><td>74</td><td>B</td></tr>
+        <tr><td>Programming (C++)</td><td>5</td><td>84</td><td>A-</td></tr>
+        <tr><td>English</td><td>5</td><td>90</td><td>A+</td></tr>
+        <tr><td>Civics</td><td>3</td><td>85</td><td>A</td></tr>
+        <tr><td>History</td><td>5</td><td>97</td><td>A+</td></tr>
+        <tr><td>Entrepreneurship</td><td>5</td><td>90</td><td>A+</td></tr>
+
+        <tr><td colspan="4"><strong>Year 2 Semester 1 (GPA: 3.85)</strong></td></tr>
+        <tr><td>Economics</td><td>5</td><td>82</td><td>A-</td></tr>
+        <tr><td>Global Trend</td><td>3</td><td>80</td><td>A-</td></tr>
+        <tr><td>Discrete Mathematics</td><td>5</td><td>85</td><td>A</td></tr>
+        <tr><td>Programming (Python)</td><td>5</td><td>88</td><td>A</td></tr>
+        <tr><td>Database</td><td>5</td><td>86</td><td>A</td></tr>
+        <tr><td>Software Engineering</td><td>5</td><td>76</td><td>B+</td></tr>
+        <tr><td>Inclusiveness</td><td>3</td><td>89</td><td>A</td></tr>
+    </table>
+
+    <!-- SUMMARY + NOTES -->
+<table border="1" cellpadding="8" cellspacing="0">
+    <tr class="light-green">
+        <th>Year</th>
+        <th>Semester</th>
+        <th>GPA</th>
+        <th>Cumulative</th>
+    </tr>
+
+    <!-- Year 1 -->
+    <tr>
+        <td rowspan="2">Year 1</td>
+        <td>Semester 1</td>
+        <td>4.00</td>
+        <td rowspan="2">3.92</td>
+    </tr>
+
+    <tr>
+        <td>Semester 2</td>
+        <td>3.83</td>
+    </tr>
+
+    <!-- Year 2 -->
+    <tr>
+        <td rowspan="1">Year 2</td>
+        <td>Semester 1</td>
+        <td>3.85</td>
+        <td>3.85</td>
+    </tr>
+
+    <!-- Total -->
+    <tr class="light-green">
+        <td colspan="3"><b>Total Cumulative GPA</b></td>
+        <td><b>3.89</b></td>
+    </tr>
+</table>
+
+    <!-- SIGNATURE -->
+    <div class="signature">
+
+        <p>
+            <strong>Signature:</strong> <span class="line"></span>
+            &nbsp;&nbsp;&nbsp;
+            <strong>Date:</strong> <span class="line"></span>
+        </p>
+    </div>
+
+</div>
+
+</body>
+</html>

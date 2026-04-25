@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Transcript Information - GpaCalculator</title>
+</head>
+<body class="print-form-page">
+    <nav class="navbar">
+        <div class="nav-links">
+            <a href="index.html">Back to Dashboard</a>
+        </div>
+        <button id="theme-toggle" class="theme-btn" title="Toggle Dark/Light Mode">
+            <span class="icon">🌙</span>
+        </button>
+    </nav>
+
+    <div class="page">
+        <h1>Transcript Details</h1>
+        <div class="container" style="max-width: 900px;">
+            <form id="print-info-form">
+                <div class="chart-grid" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));">
+                    <!-- Student Information -->
+                    <div class="chart-container">
+                        <h3>Student Information</h3>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label>Full Name</label>
+                            <input type="text" id="student-name" required placeholder="Enter full name">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label>Program / Major</label>
+                            <input type="text" id="student-program" required placeholder="e.g. Computer Science">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label>Email Address</label>
+                            <input type="email" id="student-email" required placeholder="email@example.com">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label>Phone Number</label>
+                            <input type="text" id="student-phone" required placeholder="+1234567890">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label>Profile Image</label>
+                            <input type="file" id="student-image" accept="image/*">
+                            <div id="image-preview" style="margin-top: 10px; width: 100px; height: 100px; border: 1px dashed var(--border-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--bg-color);">
+                                <span style="font-size: 0.8rem; color: #999;">Preview</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- University Information -->
+                    <div class="chart-container">
+                        <h3>University Information</h3>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label>University Name</label>
+                            <input type="text" id="uni-name" required placeholder="Enter university name">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label>College</label>
+                            <input type="text" id="uni-college" required placeholder="e.g. College of Engineering">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label>Department</label>
+                            <input type="text" id="uni-dept" required placeholder="e.g. Software Engineering">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label>Location</label>
+                            <input type="text" id="uni-location" required placeholder="City, Country">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions" style="margin-top: 30px; justify-content: center;">
+                    <button type="submit" class="btn-primary" style="padding: 12px 40px; font-size: 1.1rem;">Generate Official Transcript</button>
+                    <button type="button" class="btn-secondary" onclick="window.location.href='index.html'">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Theme initialization
+        const themeToggle = document.getElementById("theme-toggle");
+        function initTheme() {
+            const savedTheme = localStorage.getItem("theme") || "light";
+            document.documentElement.setAttribute("data-theme", savedTheme);
+            themeToggle.querySelector(".icon").innerText = savedTheme === "dark" ? "☀️" : "🌙";
+        }
+        themeToggle.addEventListener("click", () => {
+            const current = document.documentElement.getAttribute("data-theme");
+            const next = current === "dark" ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", next);
+            localStorage.setItem("theme", next);
+            themeToggle.querySelector(".icon").innerText = next === "dark" ? "☀️" : "🌙";
+        });
+        initTheme();
+
+        // Image Preview
+        const imageInput = document.getElementById('student-image');
+        const imagePreview = document.getElementById('image-preview');
+        imageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover;">`;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Form Submission
+        document.getElementById('print-info-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const info = {
+                student: {
+                    name: document.getElementById('student-name').value,
+                    program: document.getElementById('student-program').value,
+                    email: document.getElementById('student-email').value,
+                    phone: document.getElementById('student-phone').value,
+                    image: imagePreview.querySelector('img') ? imagePreview.querySelector('img').src : null
+                },
+                uni: {
+                    name: document.getElementById('uni-name').value,
+                    college: document.getElementById('uni-college').value,
+                    dept: document.getElementById('uni-dept').value,
+                    location: document.getElementById('uni-location').value
+                }
+            };
+            sessionStorage.setItem('transcriptInfo', JSON.stringify(info));
+            window.location.href = 'transcript.html'; 
+        });
+    </script>
+</body>
+</html>

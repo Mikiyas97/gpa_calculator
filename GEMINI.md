@@ -25,6 +25,7 @@ A multi-version web application for calculating and tracking academic GPA, featu
 - [x] **Responsive Chart Grid:** Implemented a flexible layout for multiple charts and integrated the Saved Records table into the grid for proportional scaling.
 - [x] **Dark Mode:** Added a theme toggle with persistence and theme-aware charts for late-night study sessions.
 - [x] **Import/Export Data (JSON):** Added backup and restore functionality via JSON files.
+- [x] **Export to PDF/Print:** Integrated a professional academic transcript generator with student and university profile information.
 - [ ] *Next: Further UI polish and advanced data filtering (pending instructions).*
 
 ## Technical Stack
