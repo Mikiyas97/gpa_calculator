@@ -1,6 +1,6 @@
 {
-  "name": "GPA Calculator Pro",
-  "short_name": "GPA Calc",
+  "name": "GPA Calculator",
+  "short_name": "GPA Calculator",
   "description": "Calculate and track your academic GPA with visual charts and offline support.",
   "start_url": "index.html",
   "display": "standalone",

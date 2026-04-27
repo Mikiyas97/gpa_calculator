@@ -34,6 +34,7 @@ const themeToggle = document.getElementById("theme-toggle");
 const recordsSection = document.getElementById("records-section");
 const exportBtn = document.getElementById("exportBtn");
 const importBtn = document.getElementById("importBtn");
+const printBtn = document.getElementById("printBtn");
 const importFile = document.getElementById("importFile");
 
 let totalSubject = 1;
@@ -552,13 +553,26 @@ function displaySavedData() {
     let savedRecords = JSON.parse(localStorage.getItem("gpaRecords") || "[]");
     savedPlace.innerHTML = "";
 
-    if (savedRecords.length === 0) {
+    // Action buttons state
+    const hasRecords = savedRecords.length > 0;
+    exportBtn.disabled = !hasRecords;
+    printBtn.disabled = !hasRecords;
+    clearAllBtn.disabled = !hasRecords;
+
+    if (!hasRecords) {
         emptyState.style.display = "block";
-        recordsSection.style.display = "none";
+        recordsSection.style.display = "block"; // Force container to stay visible
         cumulativeSection.style.display = "none";
         chartSection.style.display = "none";
+        savedDataTable.parentElement.style.display = "none"; // Hide the table wrapper only
         return;
     }
+
+    emptyState.style.display = "none";
+    recordsSection.style.display = "block";
+    savedDataTable.parentElement.style.display = "block"; // Show the table wrapper
+    cumulativeSection.style.display = "block";
+    chartSection.style.display = "block";
 
     // Sort records: Year first, then Semester
     savedRecords.sort((a, b) => {
@@ -570,11 +584,6 @@ function displaySavedData() {
         const semB = parseInt(b.semester.match(/\d+/)[0]);
         return semA - semB;
     });
-
-    emptyState.style.display = "none";
-    recordsSection.style.display = "block";
-    cumulativeSection.style.display = "block";
-    chartSection.style.display = "block";
 
     let totalGpaSum = 0;
     savedRecords.forEach(record => {

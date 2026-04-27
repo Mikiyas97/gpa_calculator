@@ -300,6 +300,13 @@ button:active {
     transform: translateY(1px);
 }
 
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(1);
+    transform: none !important;
+}
+
 /* Modal Styling */
 .modal {
     display: none;
