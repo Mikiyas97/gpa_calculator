@@ -4,7 +4,7 @@
     --accent-color: #2ecc71;
     --text-color: #333;
     --bg-color: #f0f2f5;
-    --card-bg: #ffffff;
+    --card-bg: #000000;
     --border-color: #eee;
     --input-border: #ddd;
     --border-radius: 8px;
@@ -154,11 +154,16 @@ input[type="text"],
 input[type="number"],
 select {
     width: 100%;
-    padding: 8px 12px;
+    padding: 10px 12px;
     border: 1px solid var(--input-border);
     border-radius: 4px;
     box-sizing: border-box;
     transition: all 0.3s;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+select option {
     background-color: var(--card-bg);
     color: var(--text-color);
 }
@@ -311,6 +316,12 @@ button:active {
     max-width: 400px;
     box-shadow: var(--shadow);
     border: 1px solid var(--border-color);
+}
+
+/* Ensure modal headings and labels respect theme */
+.modal-content h2, 
+.modal-content label {
+    color: var(--text-color);
 }
 
 .form-group {
