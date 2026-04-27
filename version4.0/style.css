@@ -255,8 +255,23 @@ button.btn-primary {
 }
 
 button.btn-secondary {
-    background-color: #e0e0e0;
-    color: #666;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.save-warning {
+    background-color: rgba(255, 71, 87, 0.1);
+    border-left: 4px solid #ff4757;
+    padding: 10px;
+    margin-bottom: 15px;
+    display: none;
+}
+
+.save-warning p {
+    color: #ff4757;
+    font-size: 0.9rem;
+    margin: 0 0 10px 0;
 }
 
 button.btn-danger {
@@ -288,12 +303,14 @@ button:active {
 }
 
 .modal-content {
-    background-color: #fff;
+    background-color: var(--card-bg);
+    color: var(--text-color);
     padding: 30px;
     border-radius: var(--border-radius);
     width: 90%;
     max-width: 400px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
 }
 
 .form-group {
