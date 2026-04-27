@@ -16,7 +16,7 @@ A multi-version web application for calculating and tracking academic GPA, featu
 - Local storage integration for saving records.
 - Semester-wise data management.
 
-### Version 3.0 (Active)
+### Version 3.0 (Completed)
 - [x] **Performance Charts:** Integrated Chart.js to provide visual insights.
     - **GPA Trend:** Line chart showing progress over semesters.
     - **Grade Distribution:** Pie chart showing frequency of grade letters.
@@ -26,6 +26,13 @@ A multi-version web application for calculating and tracking academic GPA, featu
 - [x] **Dark Mode:** Added a theme toggle with persistence and theme-aware charts for late-night study sessions.
 - [x] **Import/Export Data (JSON):** Added backup and restore functionality via JSON files.
 - [x] **Export to PDF/Print:** Integrated a professional academic transcript generator with student and university profile information.
+
+### Version 4.0 (Active)
+- [x] **Progressive Web App (PWA):**
+    - [x] Added `manifest.json` for app metadata and installability.
+    - [x] Implemented Service Worker (`sw.js`) for offline support and asset caching.
+    - [x] Created `icon.svg` as a scalable app icon.
+    - [x] Added mobile-friendly meta tags and theme-color support.
 - [ ] *Next: Further UI polish and advanced data filtering (pending instructions).*
 
 ## Technical Stack
