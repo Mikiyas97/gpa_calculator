@@ -1,8 +1,10 @@
-const CACHE_NAME = 'gpa-calc-v5';
+const CACHE_NAME = 'gpa-calc-v6';
 
 const ASSETS = [
   './',
   './index.html',
+  './print.html',
+  './transcript.html',
   './style.css',
   './script.js',
   './icon.svg',
