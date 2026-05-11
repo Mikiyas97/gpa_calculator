@@ -1,147 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#4a90e2">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="icon.svg">
-    <title>GpaCalculator Pro</title>
-    <script src="js/chart.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GPA Pro - Calculator</title>
+    <meta name="theme-color" content="#0f172a">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
+    <!-- NAVBAR -->
     <nav class="navbar">
+        <a href="index.html" class="logo">GPA<span>Pro</span></a>
+
         <div class="nav-links">
-            <a href="#" id="nav-home" class="active">Home</a>
-            <a href="#" id="nav-data">Data</a>
+            <a href="index.html" class="active">Dashboard</a>
+            <a href="data.html">Analytics</a>
+            <a href="print.html">Transcript</a>
         </div>
-        <button id="theme-toggle" class="theme-btn" title="Toggle Dark/Light Mode">
-            <span class="icon">🌙</span>
-        </button>
+
+        <div class="nav-actions">
+            <button id="theme-toggle" class="glass-btn" title="Toggle Dark/Light Mode">
+                <span class="icon">🌙</span>
+            </button>
+            
+            <button id="loginBtn" class="login-btn">Sign In</button>
+            
+            <div id="user-info" class="user-info" style="display: none;">
+                <img id="user-photo" src="" alt="Profile" class="user-photo">
+                <span id="user-name" class="user-name"></span>
+                <button id="logoutBtn" class="logout-btn" title="Logout">
+                    <span>🚪</span>
+                </button>
+            </div>
+        </div>
     </nav>
 
-    <div id="home-page" class="page">
-        <h1>GPA CALCULATOR</h1>
-        <div class="container">
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Subject</th>
-                            <th>Credit</th>
-                            <th>Score</th>
-                            <th>Grade</th>
-                        </tr>
-                    </thead>
-                    <tbody id="addPlace">
-                        <tr>
-                            <td><input type="text" placeholder="Subject 1" id="subject-1"></td>
-                            <td><input type="number" placeholder="Credit" required id="credit-1"></td>
-                            <td><input type="number" placeholder="Score" required id="score-1" oninput="updateGrade(1)"></td>
-                            <td><output id="grade-1"></output></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <button id="addBtn">+</button>
-            <div class="result-container">
-                <div id="result">0.0/4.0</div>
-            </div>
-            <div class="actions">
-                <button id="calculateBtn" class="btn-primary">Calculate</button>
-                <button id="resetBtn" class="btn-secondary">Reset</button>
-                <button id="saveBtn" class="btn-secondary">Save</button>
+    <!-- AUTH PAGE -->
+    <div id="auth-page" class="page" style="display: none; margin: 0 auto;">
+        <div class="auth-container">
+            <div class="auth-icon">🔐</div>
+            <h2>Secure Your Data</h2>
+            <p>Sign in to sync your GPA records across all your devices and keep your data safe in the cloud.</p>
+            
+            <button id="googleLoginBtn" class="google-btn">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20">
+                <span>Sign in with Google</span>
+            </button>
+            
+            <div class="auth-features">
+                <div class="feature-item">☁️ Cloud Sync</div>
+                <div class="feature-item">📱 Multi-device</div>
+                <div class="feature-item">🛡️ Secure</div>
             </div>
         </div>
     </div>
 
-    <div id="data-page" class="page" style="display: none;">
-        <h1>SAVED RECORDS</h1>
-        <div class="container">
-            <div id="cumulative-section" style="display: none; background: linear-gradient(135deg, #4a90e2, #357abd); color: white; padding: 20px; border-radius: var(--border-radius); margin-bottom: 20px; text-align: center;">
-                <h3 style="margin: 0; opacity: 0.9; font-size: 0.9rem; text-transform: uppercase;">Cumulative GPA</h3>
-                <div id="cumulative-gpa" style="font-size: 2.5rem; font-weight: bold; margin: 5px 0;">0.00</div>
-                <p id="cumulative-count" style="margin: 0; opacity: 0.8; font-size: 0.85rem;">Based on 0 semesters</p>
-            </div>
+    <!-- MAIN CALCULATOR -->
+    <div id="home-page" class="page" style="margin: 0 auto; max-width: 1200px;">
+        <section class="main-grid">
 
-            <div id="empty-state" style="text-align: center; padding: 40px 20px;">
-                <div style="font-size: 50px; margin-bottom: 10px;">📊</div>
-                <h3 style="color: #666; margin-bottom: 10px;">No Records Yet</h3>
-                <p style="color: #999; font-size: 0.9rem; margin-bottom: 20px;">Calculate and save your first GPA to see your academic progress here!</p>
-                <button class="btn-primary" onclick="navHome.click()">Go to Calculator</button>
-            </div>
+            <!-- LEFT: Calculator Card -->
+            <div class="card">
+                <div class="section-title">
+                    <h2>Semester GPA Calculator</h2>
+                    <span id="current-period" style="color: var(--muted); font-size: 0.9rem; font-weight: 600;">Current Session</span>
+                </div>
 
-            <div class="data-actions" style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
-                <button id="importBtn" class="btn-primary" style="flex: 1; min-width: 150px;">📥 Import (JSON)</button>
-                <button id="exportBtn" class="btn-primary" style="flex: 1; min-width: 150px;">📤 Export (JSON)</button>
-                <button id="printBtn" class="btn-primary" style="flex: 1; min-width: 150px; background-color: var(--accent-color); border-color: var(--accent-color);" onclick="window.location.href='print.html'">📜 Generate Transcript</button>
-                <input type="file" id="importFile" accept=".json" style="display: none;">
-            </div>
-
-            <div id="records-section" class="chart-container" style="margin-bottom: 20px; display: none;">
-                <h3 style="text-align: center; margin-top: 0;">Saved Records</h3>
-                <div class="table-responsive" style="min-width: unset;">
-                    <table id="saved-data-table" style="min-width: unset;">
+                <div class="table-wrap">
+                    <table>
                         <thead>
                             <tr>
-                                <th>Year</th>
-                                <th>Semester</th>
-                                <th>GPA</th>
-                                <th>Action</th>
+                                <th>Subject</th>
+                                <th style="width: 100px;">Credit</th>
+                                <th style="width: 100px;">Score</th>
+                                <th style="width: 80px;">Grade</th>
                             </tr>
                         </thead>
-                        <tbody id="savedPlace">
-                            <!-- Saved data will appear here -->
+                        <tbody id="addPlace">
+                            <tr>
+                                <td><input type="text" placeholder="Subject Name" id="subject-1"></td>
+                                <td><input type="number" placeholder="Credit" id="credit-1"></td>
+                                <td><input type="number" placeholder="Score" id="score-1"></td>
+                                <td><output id="grade-1" class="grade-badge"></output></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
-                <button id="clearAllBtn" class="btn-secondary" style="margin-top: 10px; width: 100%;">Clear All</button>
+
+                <button id="addBtn" class="add-btn" title="Add Subject">+</button>
+
+                <div class="result-box">
+                    <h3>Your Semester GPA</h3>
+                    <h1 id="result">0.00</h1>
+                </div>
+
+                <div class="actions">
+                    <button id="calculateBtn" class="primary-btn">Calculate GPA</button>
+                    <button id="resetBtn" class="secondary-btn">Reset</button>
+                    <button id="saveBtn" class="secondary-btn">Save Semester</button>
+                </div>
             </div>
 
-            <!-- Charts Section -->
-            <div id="chart-section" style="display: none; margin-bottom: 20px;">
-                <div class="chart-grid">
+            <!-- BOTTOM: Side Panel Content moved to Bottom -->
+            <div class="bottom-panel" style="width: 100%; display: flex; flex-direction: column; gap: 30px;">
+                <div class="card mini-card">
+                    <h3>Academic Progress</h3>
+                    <p style="color: var(--muted); line-height:1.7; font-size: 0.9rem;">
+                        Track your journey towards academic excellence. Keep maintaining consistent scores to graduate with distinction.
+                    </p>
+                    <div class="progress">
+                        <span id="progress-bar"></span>
+                    </div>
+                </div>
 
-                    <!-- Grade Distribution Pie Chart -->
-                    <div class="chart-container">
-                        <h3>Grade Distribution</h3>
-                        <div style="max-width: 250px; margin: 0 auto;">
-                            <canvas id="gradeChart"></canvas>
+                <div class="card mini-card">
+                    <h3>Quick Features</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <div class="feature" onclick="window.location.href='data.html'" style="cursor: pointer;">
+                            <div class="feature-icon">📊</div>
+                            <div class="feature-text">
+                                <h4>Analytics</h4>
+                                <p>Track trends and performance</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- GPA Trend Chart -->
-                    <div class="chart-container">
-                        <h3>GPA Trend</h3>
-                        <canvas id="trendChart"></canvas>
-                    </div>
+                        <div class="feature">
+                            <div class="feature-icon">☁️</div>
+                            <div class="feature-text">
+                                <h4>Cloud Sync</h4>
+                                <p>Access records anywhere</p>
+                            </div>
+                        </div>
 
+                        <div class="feature" onclick="window.location.href='print.html'" style="cursor: pointer;">
+                            <div class="feature-icon">📜</div>
+                            <div class="feature-text">
+                                <h4>Transcript</h4>
+                                <p>Generate printable reports</p>
+                            </div>
+                        </div>
 
-                    <!-- Credit Load Chart -->
-                    <div class="chart-container">
-                        <h3>Credit Load per Semester</h3>
-                        <canvas id="creditChart"></canvas>
-                    </div>
-
-                    <!-- Avg Score Trend Chart -->
-                    <div class="chart-container">
-                        <h3>Average Score Trend</h3>
-                        <canvas id="scoreChart"></canvas>
+                        <div class="feature" onclick="document.getElementById('theme-toggle').click()" style="cursor: pointer;">
+                            <div class="feature-icon">🌙</div>
+                            <div class="feature-text">
+                                <h4>Dark Mode</h4>
+                                <p>Modern clean interface</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 
-    <!-- Save Modal -->
+    <!-- SAVE MODAL -->
     <div id="saveModal" class="modal">
         <div class="modal-content">
-            <h2>Save GPA</h2>
+            <h2 style="margin-bottom: 20px;">Save Semester</h2>
             <div class="form-group">
-                <label for="save-year">Year:</label>
+                <label for="save-year">Academic Year</label>
                 <select id="save-year">
                     <option value="Year 1">Year 1</option>
                     <option value="Year 2">Year 2</option>
@@ -151,23 +169,64 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="save-semester">Semester:</label>
+                <label for="save-semester">Semester</label>
                 <select id="save-semester">
                     <option value="Semester 1">Semester 1</option>
                     <option value="Semester 2">Semester 2</option>
                 </select>
             </div>
-            <div id="save-warning" class="save-warning">
-                <p>A record for this Year and Semester already exists.</p>
-                <button id="modifyExistingBtn" class="btn-primary" style="font-size: 0.8rem; padding: 5px 10px;">Modify Existing Record</button>
+            <div id="save-warning" class="save-warning" style="display: none; background: rgba(239, 68, 68, 0.1); color: var(--grade-F); padding: 15px; border-radius: 12px; margin-bottom: 20px; font-size: 0.85rem;">
+                <p>A record for this period already exists.</p>
+                <button id="modifyExistingBtn" class="primary-btn" style="padding: 8px 15px; font-size: 0.8rem; margin-top: 10px;">Modify Existing</button>
             </div>
-            <div class="modal-actions">
-                <button id="confirmSaveBtn" class="btn-primary">Save</button>
-                <button id="cancelSaveBtn" class="btn-secondary">Cancel</button>
+            <div class="actions">
+                <button id="confirmSaveBtn" class="primary-btn">Confirm Save</button>
+                <button id="cancelSaveBtn" class="secondary-btn">Cancel</button>
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- CHATBOT -->
+    <div id="chatbot-container" class="chatbot-container">
+        <div id="chat-window" class="chat-main" style="display: none; position: absolute; bottom: 85px; right: 0; width: 380px; z-index: 3000;">
+            <div class="chat-header">
+                <div class="bot-profile">
+                    <div class="bot-avatar">🤖</div>
+                    <div>
+                        <h3 style="font-size: 1rem;">Academic AI Assistant</h3>
+                        <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
+                            <div class="online"></div>
+                            <span style="color:var(--muted); font-size:0.85rem;">Online</span>
+                        </div>
+                    </div>
+                </div>
+                <button id="close-chat" class="glass-btn" style="padding: 8px 12px; font-size: 1.2rem;">✖️</button>
+            </div>
+
+            <!-- CHAT BODY -->
+            <div id="chat-messages" class="chat-body">
+                <div class="message bot-message">
+                    👋 Hello Mikiyas! I can help you with GPA predictions,
+                    study planning, course recommendations, and academic advice.
+                </div>
+                <!-- Chat messages injected here -->
+            </div>
+
+            <!-- INPUT -->
+            <div class="chat-input">
+                <input type="text" id="chat-input" placeholder="Ask your AI academic assistant..." autocomplete="off">
+                <button id="send-chat" class="send-btn">➤</button>
+            </div>
+        </div>
+        <button id="chat-toggle" class="chat-toggle" title="Open AI Assistant">
+            💬
+        </button>
+    </div>
+
+    <footer>
+        © 2026 GPA Pro • Designed with Modern UI/UX
+    </footer>
+
+    <script type="module" src="js/home.js"></script>
 </body>
 </html>

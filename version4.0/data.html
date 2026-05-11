@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GPA Pro - Analytics</title>
+    <link rel="manifest" href="assets/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/lib/chart.min.js"></script>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">GPA<span>Pro</span></a>
+
+        <div class="nav-links">
+            <a href="index.html">Dashboard</a>
+            <a href="data.html" class="active">Analytics</a>
+            <a href="print.html">Transcript</a>
+        </div>
+
+        <div class="nav-actions">
+            <button id="theme-toggle" class="glass-btn" title="Toggle Dark/Light Mode">
+                <span class="icon">🌙</span>
+            </button>
+            
+            <button id="loginBtn" class="login-btn">Sign In</button>
+            
+            <div id="user-info" class="user-info" style="display: none;">
+                <img id="user-photo" src="" alt="Profile" class="user-photo">
+                <span id="user-name" class="user-name"></span>
+                <button id="logoutBtn" class="logout-btn" title="Logout">
+                    <span>🚪</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- AUTH PAGE -->
+    <div id="auth-page" class="page" style="display: none; margin: 0 auto;">
+        <div class="auth-container">
+            <div class="auth-icon">🔐</div>
+            <h2>Authentication Required</h2>
+            <p>Please sign in to view your academic analytics and saved records.</p>
+            <button id="googleLoginBtn" class="google-btn">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20">
+                <span>Sign in with Google</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="data-page" class="page" style="margin: 0 auto; max-width: 1200px;">
+        <h1 style="margin-bottom: 30px; font-weight: 800;">Academic Analytics</h1>
+        
+        <div id="cumulative-section" class="result-box" style="display: none; margin-bottom: 40px; text-align: left; padding: 40px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="margin-bottom: 5px;">Overall CGPA</h3>
+                    <h1 id="cumulative-gpa" style="font-size: 5rem;">0.00</h1>
+                    <p id="cumulative-count" style="opacity: 0.8; font-weight: 600;">Based on 0 semesters</p>
+                </div>
+                <div style="font-size: 6rem; opacity: 0.2;">🎓</div>
+            </div>
+        </div>
+
+        <div id="empty-state" class="card" style="text-align: center; padding: 60px;">
+            <div style="font-size: 4rem; margin-bottom: 20px;">📊</div>
+            <h2>No Records Found</h2>
+            <p style="color: var(--muted); margin-bottom: 30px;">You haven't saved any GPA records yet. Start by calculating and saving your semester GPA.</p>
+            <button class="primary-btn" onclick="window.location.href='index.html'">Go to Calculator</button>
+        </div>
+
+        <section id="records-section" class="records" style="display: none; padding: 0;">
+
+            <div class="section-title">
+                <h2>Saved Semesters</h2>
+                <div class="nav-actions">
+                    <button id="importBtn" class="glass-btn">📥 Import</button>
+                    <button id="exportBtn" class="glass-btn">📤 Export JSON</button>
+                    <input type="file" id="importFile" accept=".json" style="display: none;">
+                </div>
+            </div>
+
+            <div id="savedPlace" class="record-grid">
+                <!-- Record cards injected here -->
+            </div>
+
+            <button id="clearAllBtn" class="secondary-btn" style="width: 100%; margin-top: 24px; background: rgba(239, 68, 68, 0.05); color: var(--grade-F); border-color: rgba(239, 68, 68, 0.15);">🗑️ Clear All Records</button>
+
+
+            <!-- CHARTS -->
+            <div id="chart-section" class="main-grid" style="grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); padding: 0;">
+                <div class="card">
+                    <div class="section-title"><h3>Grade Distribution</h3></div>
+                    <div style="max-width: 300px; margin: 0 auto;">
+                        <canvas id="gradeChart"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="section-title"><h3>GPA Trend</h3></div>
+                    <canvas id="trendChart"></canvas>
+                </div>
+                <div class="card">
+                    <div class="section-title"><h3>Credit Load</h3></div>
+                    <canvas id="creditChart"></canvas>
+                </div>
+                <div class="card">
+                    <div class="section-title"><h3>Average Score</h3></div>
+                    <canvas id="scoreChart"></canvas>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- CHATBOT -->
+    <div id="chatbot-container" class="chatbot-container">
+        <div id="chat-window" class="chat-main" style="display: none; position: absolute; bottom: 85px; right: 0; width: 380px; z-index: 3000;">
+            <div class="chat-header">
+                <div class="bot-profile">
+                    <div class="bot-avatar">🤖</div>
+                    <div>
+                        <h3 style="font-size: 1rem;">Academic AI Assistant</h3>
+                        <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
+                            <div class="online"></div>
+                            <span style="color:var(--muted); font-size:0.85rem;">Online</span>
+                        </div>
+                    </div>
+                </div>
+                <button id="close-chat" class="glass-btn" style="padding: 8px 12px; font-size: 1.2rem;">✖️</button>
+            </div>
+
+            <!-- CHAT BODY -->
+            <div id="chat-messages" class="chat-body">
+                <div class="message bot-message">
+                    👋 Hello Mikiyas! I can help you with GPA predictions,
+                    study planning, course recommendations, and academic advice.
+                </div>
+                <!-- Chat messages injected here -->
+            </div>
+
+            <!-- INPUT -->
+            <div class="chat-input">
+                <input type="text" id="chat-input" placeholder="Ask your AI academic assistant..." autocomplete="off">
+                <button id="send-chat" class="send-btn">➤</button>
+            </div>
+        </div>
+        <button id="chat-toggle" class="chat-toggle" title="Open AI Assistant">
+            💬
+        </button>
+    </div>
+
+    <footer>
+        © 2026 GPA Pro • Designed with Modern UI/UX
+    </footer>
+
+    <script type="module" src="js/data-view.js"></script>
+</body>
+</html>
