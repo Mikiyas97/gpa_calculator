@@ -1,44 +1,99 @@
-# GPA Calculator - Project Status & Roadmap
+# 🎓 GPA Pro: Premium Academic Advisor & Calculator
 
-## Project Overview
-A multi-version web application for calculating and tracking academic GPA, featuring data persistence and visual performance analysis.
+[![Vercel Deployment](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://gpa-calculator-sage-six.vercel.app/)
+[![PWA Ready](https://img.shields.io/badge/PWA-Ready-blue?style=for-the-badge&logo=pwa)](https://gpa-calculator-sage-six.vercel.app/)
 
-## Core Mandates
-- **Visual Integrity:** Maintain a modern, clean, and responsive UI across all versions.
-- **Data Safety:** Ensure student records are accurately saved to and retrieved from local storage.
-- **Contextual Precedence:** Instructions in this file guide the ongoing development of the GPA Calculator.
+**GPA Pro** is a modern, high-performance academic management platform designed to help students track their performance, visualize their progress, and receive AI-driven academic coaching. 
 
-## Development Progress
+🔗 **Live Demo**: [https://gpa-calculator-sage-six.vercel.app/](https://gpa-calculator-sage-six.vercel.app/)
 
-### Version 1.0 & 2.0 (Completed)
-- Basic GPA calculation logic.
-- UI implementation with HTML/CSS.
-- Local storage integration for saving records.
-- Semester-wise data management.
+---
 
-### Version 3.0 (Completed)
-- [x] **Performance Charts:** Integrated Chart.js to provide visual insights.
-    - **GPA Trend:** Line chart showing progress over semesters.
-    - **Grade Distribution:** Pie chart showing frequency of grade letters.
-    - **Credit Load:** Bar chart tracking academic workload per semester.
-    - **Average Score Trend:** Line chart tracking raw score performance.
-- [x] **Responsive Chart Grid:** Implemented a flexible layout for multiple charts and integrated the Saved Records table into the grid for proportional scaling.
-- [x] **Dark Mode:** Added a theme toggle with persistence and theme-aware charts for late-night study sessions.
-- [x] **Import/Export Data (JSON):** Added backup and restore functionality via JSON files.
-- [x] **Export to PDF/Print:** Integrated a professional academic transcript generator with student and university profile information.
+## ✨ Key Features
 
-### Version 4.0 (Active)
-- [x] **Progressive Web App (PWA):**
-    - [x] Added `manifest.json` for app metadata and installability.
-    - [x] Implemented Service Worker (`sw.js`) for offline support and asset caching.
-    - [x] Created `icon.svg` as a scalable app icon.
-    - [x] Added mobile-friendly meta tags and theme-color support.
-- [ ] *Next: Further UI polish and advanced data filtering (pending instructions).*
+### 🤖 AI Academic Advisor
+Powered by **Google Gemini 1.5 Flash**, the built-in advisor analyzes your academic history to provide personalized feedback, identify weak subjects, and suggest improvement strategies. It maintains chat history synced to your account.
 
-## Technical Stack
-- **Frontend:** Vanilla HTML5, CSS3, JavaScript (ES6+).
-- **Library:** [Chart.js](https://www.chartjs.org/) for data visualization.
-- **Storage:** Browser `localStorage` for data persistence.
+### 🎯 "Road to Success" (Target GPA)
+Enter your desired graduation GPA, and the AI will calculate the exact performance needed in your remaining semesters. It categorizes your goal as **Possible**, **Challenging**, or **Impossible** based on real mathematical feasibility.
 
-## Current Focus
-Refining the Dark Mode user experience, specifically container colors and hover states for high-contrast accessibility in pure black themes.
+### 📊 Professional Analytics
+Interactive dashboards using **Chart.js** visualize your GPA trends across semesters. Track your growth and identify performance patterns with high-fidelity visual reports.
+
+### 📄 Official Transcripts
+Generate professional, high-quality academic transcripts. 
+- **Modern Layout**: Two-column semester grid for a professional look.
+- **Easy Export**: Optimized for high-resolution PDF export and printing.
+- **Year Grouping**: Clean organization by academic year.
+
+### ☁️ Cloud Sync & Security
+Integrated with **Firebase Authentication and Firestore**, ensuring your data is securely synced across all your devices. Never lose a record again.
+
+### 📶 PWA & Offline Support
+GPA Pro is a fully functional **Progressive Web App**. 
+- **Offline Mode**: Access your records and calculate your GPA even without internet.
+- **Installable**: Add to your home screen on Mobile or Desktop for a native app experience.
+
+---
+
+## 🛠️ Technology Stack
+
+- **Frontend**: HTML5, CSS3 (Modern UI), JavaScript (ES6+ Modules)
+- **Backend**: Python (Flask)
+- **AI**: Google Gemini API
+- **Database/Auth**: Firebase Firestore & Auth
+- **Deployment**: Vercel (Serverless Functions)
+- **Visualization**: Chart.js
+- **Math Rendering**: KaTeX (for professional advisor analysis)
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/Mikiyas97/gpa_calculator.git
+cd gpa_calculator
+```
+
+### 2. Backend Setup
+1. Create a Python virtual environment:
+   ```bash
+   cd backend
+   python -m venv venv
+   source venv/bin/scripts/activate  # Windows: .\venv\Scripts\activate
+   ```
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Configure your `.env` file:
+   - `GEMINI_API_KEY`: Your Google AI key.
+   - `FIREBASE_SERVICE_ACCOUNT_PATH`: Path to your Firebase admin SDK JSON.
+
+### 3. Running Locally
+```bash
+# In the backend folder
+flask run
+
+# Then open index.html in your browser (use Live Server for best results)
+```
+
+---
+
+## ☁️ Deployment
+
+This project is optimized for **Vercel**.
+
+1. Connect your repository to Vercel.
+2. Set the following **Environment Variables**:
+   - `GEMINI_API_KEY`: [Your Key]
+   - `FIREBASE_SERVICE_ACCOUNT`: [The full JSON content of your service account file]
+3. Add your Vercel URL to **Firebase Console** -> Authentication -> Authorized Domains.
+
+---
+
+## 🛡️ License
+Distributed under the MIT License. See `LICENSE` for more information.
+
+Developed with ❤️ by **Mikiyas97**
