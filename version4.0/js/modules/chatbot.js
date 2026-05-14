@@ -112,8 +112,10 @@ export function initChatbot() {
                 addMessage(data.response, "bot", chatMessages);
                 // Refresh history list to show title if it's a new chat
                 loadChatHistory();
+            } else if (data.error) {
+                addMessage(`Advisor Brain Error: ${data.error}`, "bot", chatMessages);
             } else {
-                addMessage("I encountered an issue analyzing your request.", "bot", chatMessages);
+                addMessage("I encountered an unknown issue analyzing your request.", "bot", chatMessages);
             }
         } catch (error) {
             console.error("Advisor AI Error:", error);
