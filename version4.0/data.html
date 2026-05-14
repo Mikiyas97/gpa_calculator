@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GPA Pro - Analytics</title>
-    <link rel="manifest" href="assets/manifest.json">
+    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -343,6 +343,15 @@
     </footer>
 
     <script type="module" src="js/data-view.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('SW Registered'))
+                    .catch(err => console.log('SW Reg Failed', err));
+            });
+        }
+    </script>
 </body>
 
 </html>

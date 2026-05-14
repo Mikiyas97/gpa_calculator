@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GPA Pro - Calculator</title>
     <meta name="theme-color" content="#0f172a">
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <!-- KaTeX for Math -->
@@ -368,6 +369,15 @@
     </footer>
 
     <script type="module" src="js/home.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('SW Registered'))
+                    .catch(err => console.log('SW Reg Failed', err));
+            });
+        }
+    </script>
 </body>
 
 </html>

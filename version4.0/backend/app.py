@@ -47,8 +47,12 @@ def advise():
     message = data.get('message')
     chat_id = data.get('chatId')
 
-    if not uid or not message or not db:
-        return jsonify({"error": "Missing UID, Message, or DB not initialized"}), 400
+    if not uid:
+        return jsonify({"error": "Missing User ID (UID)"}), 400
+    if not message:
+        return jsonify({"error": "Message is empty"}), 400
+    if not db:
+        return jsonify({"error": "Firebase Database not initialized. Check your service account configuration."}), 400
 
     try:
         user_ref = db.collection('users').document(uid)
