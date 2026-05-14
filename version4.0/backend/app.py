@@ -1,7 +1,12 @@
+import os
+import sys
+
+# Add the current directory to the path so Vercel can find sibling modules
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from advisor_logic import AdvisorSystem
-import os
 import firebase_admin
 from firebase_admin import credentials, firestore
 from dotenv import load_dotenv
