@@ -1,5 +1,5 @@
 // Entry point for data.html (Records & Analytics)
-import { initAuth, loginWithGoogle, logoutUser } from "./modules/auth.js";
+import { initAuth, loginWithGoogle, logoutUser, getCurrentUser } from "./modules/auth.js";
 import { initCloudSync, saveLocalRecords, getLocalRecords, syncToCloud } from "./modules/storage.js";
 import { updateAllCharts } from "./modules/charts.js";
 import { initTheme, initMenuToggle, toggleUserUI, showAuthPage, hideAuthPage } from "./modules/ui.js";
@@ -17,11 +17,20 @@ const cumulativeCountDisplay = document.getElementById("cumulative-count");
 const emptyState = document.getElementById("empty-state");
 const chartSection = document.getElementById("chart-section");
 const cumulativeSection = document.getElementById("cumulative-section");
+const roadToSuccess = document.getElementById("road-to-success");
+const targetGpaInput = document.getElementById("target-gpa");
+const remSemestersInput = document.getElementById("rem-semesters");
+const requiredGpaDisplay = document.getElementById("required-gpa");
+const targetStatus = document.getElementById("target-status");
+const targetResultContainer = document.getElementById("target-result-container");
+const targetPlaceholder = document.getElementById("target-placeholder");
 const recordsSection = document.getElementById("records-section");
 
 const loginBtn = document.getElementById("loginBtn");
 const googleLoginBtn = document.getElementById("googleLoginBtn");
 
+let currentCumulativeCredits = 0;
+let currentCumulativeGpa = 0;
 let unsubscribeSync = null;
 
 // --- Initialization ---
@@ -136,10 +145,75 @@ function displaySavedData(records = null) {
         savedPlace.appendChild(card);
     });
 
-    cumulativeGpaDisplay.innerText = (totalGpaSum / savedRecords.length).toFixed(2);
+    currentCumulativeCredits = savedRecords.reduce((total, record) => {
+        return total + record.subjects.reduce((sum, s) => sum + parseFloat(s.credit || 0), 0);
+    }, 0);
+    currentCumulativeGpa = totalGpaSum / savedRecords.length;
+
+    cumulativeGpaDisplay.innerText = currentCumulativeGpa.toFixed(2);
     cumulativeCountDisplay.innerText = `Based on ${savedRecords.length} semester${savedRecords.length > 1 ? 's' : ''}`;
+    
+    if (roadToSuccess) roadToSuccess.style.display = "block";
+    updateTargetCalculation();
+    
     updateAllCharts(savedRecords);
 }
+
+// --- Target GPA Logic ---
+
+function updateTargetCalculation() {
+    const targetGpa = parseFloat(targetGpaInput.value);
+    const remSemesters = parseInt(remSemestersInput.value);
+    
+    if (!targetGpa || !remSemesters || !currentCumulativeCredits) {
+        targetResultContainer.style.display = "none";
+        targetPlaceholder.style.display = "block";
+        return;
+    }
+
+    targetResultContainer.style.display = "block";
+    targetPlaceholder.style.display = "none";
+
+    // Average credits per semester (based on history, fallback to 18)
+    const records = getLocalRecords();
+    const avgCredits = records.length > 0 
+        ? currentCumulativeCredits / records.length 
+        : 18;
+    
+    const futureCredits = remSemesters * avgCredits;
+    const totalCredits = currentCumulativeCredits + futureCredits;
+
+    // Formula: G_future = (G_target * C_total - G_current * C_current) / C_future
+    const requiredGpa = (targetGpa * totalCredits - (currentCumulativeGpa * currentCumulativeCredits)) / futureCredits;
+
+    requiredGpaDisplay.innerText = requiredGpa.toFixed(2);
+
+    if (requiredGpa > 4.0) {
+        targetStatus.innerText = "Impossible";
+        targetStatus.style.background = "rgba(239, 68, 68, 0.1)";
+        targetStatus.style.color = "var(--grade-F)";
+        requiredGpaDisplay.style.color = "var(--grade-F)";
+    } else if (requiredGpa > 3.5) {
+        targetStatus.innerText = "Challenging";
+        targetStatus.style.background = "rgba(245, 158, 11, 0.1)";
+        targetStatus.style.color = "var(--grade-C)";
+        requiredGpaDisplay.style.color = "var(--grade-C)";
+    } else if (requiredGpa < 0) {
+        targetStatus.innerText = "Goal Achieved!";
+        targetStatus.style.background = "rgba(16, 185, 129, 0.1)";
+        targetStatus.style.color = "var(--grade-A)";
+        requiredGpaDisplay.innerText = "0.00";
+        requiredGpaDisplay.style.color = "var(--grade-A)";
+    } else {
+        targetStatus.innerText = "Possible";
+        targetStatus.style.background = "rgba(16, 185, 129, 0.1)";
+        targetStatus.style.color = "var(--grade-A)";
+        requiredGpaDisplay.style.color = "var(--primary)";
+    }
+}
+
+targetGpaInput.addEventListener("input", updateTargetCalculation);
+remSemestersInput.addEventListener("input", updateTargetCalculation);
 
 // --- Global Action Handlers ---
 
@@ -147,9 +221,8 @@ window.deleteRecord = async function(id) {
     if (confirm("Delete this record?")) {
         const records = getLocalRecords().filter(r => r.id !== id);
         saveLocalRecords(records);
-        initAuth(async (user) => {
-            if (user) await syncToCloud(user.uid, records);
-        });
+        const user = getCurrentUser();
+        if (user) await syncToCloud(user.uid, records);
         displaySavedData(records);
     }
 };
@@ -163,9 +236,8 @@ window.editRecord = function(id) {
 clearAllBtn.addEventListener("click", async () => {
     if (confirm("Clear all records?")) {
         saveLocalRecords([]);
-        initAuth(async (user) => {
-            if (user) await syncToCloud(user.uid, []);
-        });
+        const user = getCurrentUser();
+        if (user) await syncToCloud(user.uid, []);
         displaySavedData([]);
     }
 });
@@ -211,11 +283,10 @@ importFile.addEventListener("change", (e) => {
             saveLocalRecords(records);
             
             // Sync to cloud if logged in
-            initAuth(async (user) => {
-                if (user) {
-                    await syncToCloud(user.uid, records);
-                }
-            });
+            const user = getCurrentUser();
+            if (user) {
+                await syncToCloud(user.uid, records);
+            }
 
             // Refresh UI
             displaySavedData(records);

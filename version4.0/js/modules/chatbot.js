@@ -2,7 +2,9 @@
 import { getLocalRecords, getLocalProfile } from "./storage.js";
 import { initAuth } from "./auth.js";
 
-const BACKEND_URL = "http://127.0.0.1:5000/api";
+const BACKEND_URL = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1') 
+    ? "http://127.0.0.1:5000/api" 
+    : "/api";
 
 let currentChatId = null;
 let currentUser = null;
@@ -86,13 +88,18 @@ export function initChatbot() {
         addMessage("Analyzing your academic data...", "bot", chatMessages, typingId);
 
         try {
+            const detailedRecords = await getLocalRecords();
             const response = await fetch(`${BACKEND_URL}/advise`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     message: message,
                     uid: currentUser.uid,
-                    chatId: currentChatId
+                    chatId: currentChatId,
+                    current_gpa: document.getElementById("cumulative-gpa")?.innerText || "0.00",
+                    detailed_records: detailedRecords,
+                    target_gpa: document.getElementById("target-gpa")?.value || null,
+                    required_future_gpa: document.getElementById("required-gpa")?.innerText || null
                 })
             });
 
@@ -181,7 +188,7 @@ export function initChatbot() {
             document.getElementById("loading-msg")?.remove();
 
             messages.forEach(msg => {
-                const role = msg.role === "model" ? "bot" : "user";
+                const role = (msg.role === "model" || msg.role === "assistant") ? "bot" : "user";
                 const text = msg.parts ? msg.parts[0] : msg.content;
                 addMessage(text, role, chatMessages);
             });
@@ -212,22 +219,45 @@ export function initChatbot() {
 }
 
 function addMessage(text, sender, container, id = null) {
+    const msgWrapper = document.createElement("div");
+    msgWrapper.className = `message-wrapper ${sender}`;
+    if (id) msgWrapper.id = id;
+
+    const label = document.createElement("div");
+    label.className = "message-role";
+    label.innerText = sender === "user" ? "You" : "Advisor";
+    
     const msgDiv = document.createElement("div");
     msgDiv.className = `message ${sender}-message`;
-    if (id) msgDiv.id = id;
 
-    // Professional Markdown Rendering using marked.js
-    // Configure marked to not break LaTeX underscores/asterisks
     marked.setOptions({
         breaks: true,
         gfm: true
     });
 
-    const formattedText = marked.parse(text);
-    msgDiv.innerHTML = formattedText;
-    container.appendChild(msgDiv);
+    // Protect math blocks from marked.js mangling
+    const mathBlocks = [];
+    const placeholder = (match) => {
+        mathBlocks.push(match);
+        return `MATH_BLOCK_PLACEHOLDER_${mathBlocks.length - 1}`;
+    };
 
-    // Render LaTeX Math using KaTeX
+    // Replace both block ($$) and inline ($) math
+    let processedText = text.replace(/\$\$[\s\S]*?\$\$|\$[^$\n]*?\$/g, placeholder);
+
+    let formattedText = marked.parse(processedText);
+    
+    // Restore math blocks
+    formattedText = formattedText.replace(/MATH_BLOCK_PLACEHOLDER_(\d+)/g, (match, index) => {
+        return mathBlocks[parseInt(index)];
+    });
+
+    msgDiv.innerHTML = formattedText;
+    
+    msgWrapper.appendChild(label);
+    msgWrapper.appendChild(msgDiv);
+    container.appendChild(msgWrapper);
+
     if (window.renderMathInElement) {
         renderMathInElement(msgDiv, {
             delimiters: [
@@ -239,5 +269,5 @@ function addMessage(text, sender, container, id = null) {
     }
 
     container.scrollTop = container.scrollHeight;
-    return msgDiv;
+    return msgWrapper;
 }

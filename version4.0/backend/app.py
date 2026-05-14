@@ -14,12 +14,22 @@ CORS(app)
 # Initialize Firebase
 try:
     if not firebase_admin._apps:
-        sa_path = os.getenv("FIREBASE_SERVICE_ACCOUNT_PATH")
-        if sa_path and os.path.exists(sa_path):
-            cred = credentials.Certificate(sa_path)
+        # Priority 1: FIREBASE_SERVICE_ACCOUNT (JSON string for Vercel/Production)
+        sa_json = os.getenv("FIREBASE_SERVICE_ACCOUNT")
+        if sa_json:
+            import json
+            cred_dict = json.loads(sa_json)
+            cred = credentials.Certificate(cred_dict)
             firebase_admin.initialize_app(cred)
         else:
-            firebase_admin.initialize_app()
+            # Priority 2: Local file path (Development)
+            sa_path = os.getenv("FIREBASE_SERVICE_ACCOUNT_PATH")
+            if sa_path and os.path.exists(sa_path):
+                cred = credentials.Certificate(sa_path)
+                firebase_admin.initialize_app(cred)
+            else:
+                # Priority 3: Default credentials
+                firebase_admin.initialize_app()
     db = firestore.client()
 except Exception as e:
     print(f"Firebase Init Error: {e}")
@@ -45,7 +55,17 @@ def advise():
         chat_doc = chat_ref.get()
         history = chat_doc.to_dict().get('messages', []) if chat_doc.exists else []
 
-        response_text = AdvisorSystem.get_response(message, profile, records, history)
+        target_gpa = data.get('target_gpa')
+        required_future_gpa = data.get('required_future_gpa')
+
+        response_text = AdvisorSystem.get_response(
+            message, 
+            profile, 
+            records, 
+            history, 
+            target_gpa=target_gpa, 
+            required_future_gpa=required_future_gpa
+        )
 
         new_messages = history + [
             {"role": "user", "content": message},
