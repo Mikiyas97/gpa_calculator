@@ -6,7 +6,7 @@
       "use": "@vercel/python"
     },
     {
-      "src": "(index|data|transcript|print|template).html",
+      "src": "*.html",
       "use": "@vercel/static"
     },
     {
@@ -20,12 +20,23 @@
     {
       "src": "assets/**",
       "use": "@vercel/static"
+    },
+    {
+      "src": "sw.js",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "manifest.json",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
       "dest": "backend/app.py"
+    },
+    {
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",
