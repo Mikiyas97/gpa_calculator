@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,33 +8,40 @@
     <link rel="manifest" href="assets/manifest.json">
     <meta name="theme-color" content="#0f172a">
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- KaTeX for Math -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/auto-render.min.js"></script>
     <script src="js/lib/chart.min.js"></script>
 </head>
+
 <body>
 
     <!-- NAVBAR -->
     <nav class="navbar">
+        <button id="menu-toggle" class="menu-toggle" aria-label="Toggle Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
         <a href="index.html" class="logo">GPA<span>Pro</span></a>
 
         <div class="nav-links">
             <a href="index.html">Dashboard</a>
             <a href="data.html" class="active">Analytics</a>
-            <a href="print.html">Transcript</a>
         </div>
 
         <div class="nav-actions">
             <button id="theme-toggle" class="glass-btn" title="Toggle Dark/Light Mode">
                 <span class="icon">🌙</span>
             </button>
-            
+
             <button id="loginBtn" class="login-btn">Sign In</button>
-            
+
             <div id="user-info" class="user-info" style="display: none;">
                 <img id="user-photo" src="" alt="Profile" class="user-photo">
                 <span id="user-name" class="user-name"></span>
-                <button id="logoutBtn" class="logout-btn" title="Logout">
-                    <span>🚪</span>
-                </button>
             </div>
         </div>
     </nav>
@@ -54,8 +62,9 @@
     <!-- MAIN CONTENT -->
     <div id="data-page" class="page" style="margin: 0 auto; max-width: 1200px;">
         <h1 style="margin-bottom: 30px; font-weight: 800;">Academic Analytics</h1>
-        
-        <div id="cumulative-section" class="result-box" style="display: none; margin-bottom: 40px; text-align: left; padding: 40px;">
+
+        <div id="cumulative-section" class="result-box"
+            style="display: none; margin-bottom: 40px; text-align: left; padding: 40px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <h3 style="margin-bottom: 5px;">Overall CGPA</h3>
@@ -69,7 +78,8 @@
         <div id="empty-state" class="card" style="text-align: center; padding: 60px;">
             <div style="font-size: 4rem; margin-bottom: 20px;">📊</div>
             <h2>No Records Found</h2>
-            <p style="color: var(--muted); margin-bottom: 30px;">You haven't saved any GPA records yet. Start by calculating and saving your semester GPA.</p>
+            <p style="color: var(--muted); margin-bottom: 30px;">You haven't saved any GPA records yet. Start by
+                calculating and saving your semester GPA.</p>
             <button class="primary-btn" onclick="window.location.href='index.html'">Go to Calculator</button>
         </div>
 
@@ -78,8 +88,9 @@
             <div class="section-title">
                 <h2>Saved Semesters</h2>
                 <div class="nav-actions">
-                    <button id="importBtn" class="glass-btn">📥 Import</button>
+                    <button id="importBtn" class="glass-btn">📥 Import JSON</button>
                     <button id="exportBtn" class="glass-btn">📤 Export JSON</button>
+                    <button onclick="window.location.href='print.html'" class="glass-btn">📜 Print</button>
                     <input type="file" id="importFile" accept=".json" style="display: none;">
                 </div>
             </div>
@@ -88,63 +99,204 @@
                 <!-- Record cards injected here -->
             </div>
 
-            <button id="clearAllBtn" class="secondary-btn" style="width: 100%; margin-top: 24px; background: rgba(239, 68, 68, 0.05); color: var(--grade-F); border-color: rgba(239, 68, 68, 0.15);">🗑️ Clear All Records</button>
+            <button id="AllBtn" class="secondary-btn"
+                style="width: 100%; margin-bottom: 24px;  margin-top: 24px; background: rgba(239, 68, 68, 0.05); color: var(--grade-F); border-color: rgba(239, 68, 68, 0.15);">🗑️
+                Clear All Records</button>
 
 
             <!-- CHARTS -->
-            <div id="chart-section" class="main-grid" style="grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); padding: 0;">
+            <div id="chart-section" class="main-grid"
+                style="grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); padding: 0;">
                 <div class="card">
-                    <div class="section-title"><h3>Grade Distribution</h3></div>
+                    <div class="section-title">
+                        <h3>Grade Distribution</h3>
+                    </div>
                     <div style="max-width: 300px; margin: 0 auto;">
                         <canvas id="gradeChart"></canvas>
                     </div>
                 </div>
                 <div class="card">
-                    <div class="section-title"><h3>GPA Trend</h3></div>
+                    <div class="section-title">
+                        <h3>GPA Trend</h3>
+                    </div>
                     <canvas id="trendChart"></canvas>
                 </div>
                 <div class="card">
-                    <div class="section-title"><h3>Credit Load</h3></div>
+                    <div class="section-title">
+                        <h3>Credit Load</h3>
+                    </div>
                     <canvas id="creditChart"></canvas>
                 </div>
                 <div class="card">
-                    <div class="section-title"><h3>Average Score</h3></div>
+                    <div class="section-title">
+                        <h3>Average Score</h3>
+                    </div>
                     <canvas id="scoreChart"></canvas>
                 </div>
             </div>
         </section>
     </div>
 
-    <!-- CHATBOT -->
-    <div id="chatbot-container" class="chatbot-container">
-        <div id="chat-window" class="chat-main" style="display: none; position: absolute; bottom: 85px; right: 0; width: 380px; z-index: 3000;">
-            <div class="chat-header">
-                <div class="bot-profile">
-                    <div class="bot-avatar">🤖</div>
-                    <div>
-                        <h3 style="font-size: 1rem;">Academic AI Assistant</h3>
-                        <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
-                            <div class="online"></div>
-                            <span style="color:var(--muted); font-size:0.85rem;">Online</span>
+    <!-- PROFILE MODAL -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content wide">
+            <!-- VIEW MODE -->
+            <div id="profile-view-mode">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <h2 style="margin: 0;">Profile Details</h2>
+                    <button id="editProfileBtn" class="primary-btn" style="padding: 8px 16px; font-size: 0.9rem;">✏️
+                        Edit
+                        Profile</button>
+                </div>
+
+                <div class="main-grid"
+                    style="padding: 0; gap: 40px; align-items: start; flex-direction: row; text-align: left;">
+                    <div style="flex: 1;">
+                        <h3 style="margin-bottom: 20px; color: var(--primary);">Student Information</h3>
+                        <div id="v-profile-image" class="profile-preview"
+                            style="margin-bottom: 20px; border-style: solid;">
+                            <span style="font-size: 0.8rem; color: var(--muted);">No Image</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <p style="font-size: 1rem;"><strong>Name:</strong> <span id="v-student-name"
+                                    style="color: var(--muted);">-</span></p>
+                            <p style="font-size: 1rem;"><strong>Program:</strong> <span id="v-student-program"
+                                    style="color: var(--muted);">-</span></p>
+                            <p style="font-size: 1rem;"><strong>Email:</strong> <span id="v-student-email"
+                                    style="color: var(--muted);">-</span></p>
+                            <p style="font-size: 1rem;"><strong>Phone:</strong> <span id="v-student-phone"
+                                    style="color: var(--muted);">-</span></p>
+                        </div>
+                    </div>
+                    <div style="flex: 1;">
+                        <h3 style="margin-bottom: 20px; color: var(--primary2);">University Information</h3>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <p style="font-size: 1rem;"><strong>University:</strong> <span id="v-uni-name"
+                                    style="color: var(--muted);">-</span></p>
+                            <p style="font-size: 1rem;"><strong>College:</strong> <span id="v-uni-college"
+                                    style="color: var(--muted);">-</span></p>
+                            <p style="font-size: 1rem;"><strong>Department:</strong> <span id="v-uni-dept"
+                                    style="color: var(--muted);">-</span></p>
+                            <p style="font-size: 1rem;"><strong>Location:</strong> <span id="v-uni-location"
+                                    style="color: var(--muted);">-</span></p>
                         </div>
                     </div>
                 </div>
-                <button id="close-chat" class="glass-btn" style="padding: 8px 12px; font-size: 1.2rem;">✖️</button>
-            </div>
-
-            <!-- CHAT BODY -->
-            <div id="chat-messages" class="chat-body">
-                <div class="message bot-message">
-                    👋 Hello Mikiyas! I can help you with GPA predictions,
-                    study planning, course recommendations, and academic advice.
+                <div class="actions" style="margin-top: 30px;">
+                    <button type="button" class="secondary-btn close-modal-btn">Close</button>
+                    <button type="button" id="modalLogoutBtn" class="secondary-btn"
+                        style="color: var(--grade-F); border-color: rgba(239, 68, 68, 0.2);">🚪 Logout</button>
                 </div>
-                <!-- Chat messages injected here -->
             </div>
 
-            <!-- INPUT -->
-            <div class="chat-input">
-                <input type="text" id="chat-input" placeholder="Ask your AI academic assistant..." autocomplete="off">
-                <button id="send-chat" class="send-btn">➤</button>
+            <!-- EDIT MODE -->
+            <div id="profile-edit-mode" style="display: none;">
+                <h2 style="margin-bottom: 20px;">Profile Setup</h2>
+                <form id="profile-form">
+                    <div class="main-grid"
+                        style="padding: 0; gap: 40px; align-items: start; flex-direction: row; text-align: left;">
+                        <!-- Student Info -->
+                        <div style="flex: 1;">
+                            <h3 style="margin-bottom: 20px; color: var(--primary);">Student Information</h3>
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="p-student-name" required placeholder="Enter full name">
+                            </div>
+                            <div class="form-group">
+                                <label>Program / Major</label>
+                                <input type="text" id="p-student-program" required placeholder="e.g. Computer Science">
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" id="p-student-email" required placeholder="email@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="text" id="p-student-phone" required placeholder="+1234567890">
+                            </div>
+                            <div class="form-group">
+                                <label>Profile Image</label>
+                                <input type="file" id="profile-image-input" accept="image/*">
+                                <div id="profile-image-preview" class="profile-preview">
+                                    <span style="font-size: 0.8rem; color: var(--muted);">Preview</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- University Info -->
+                        <div style="flex: 1;">
+                            <h3 style="margin-bottom: 20px; color: var(--primary2);">University Information</h3>
+                            <div class="form-group">
+                                <label>University Name</label>
+                                <input type="text" id="p-uni-name" required placeholder="Enter university name">
+                            </div>
+                            <div class="form-group">
+                                <label>College</label>
+                                <input type="text" id="p-uni-college" required
+                                    placeholder="e.g. College of Engineering">
+                            </div>
+                            <div class="form-group">
+                                <label>Department</label>
+                                <input type="text" id="p-uni-dept" required placeholder="e.g. Software Engineering">
+                            </div>
+                            <div class="form-group">
+                                <label>Location</label>
+                                <input type="text" id="p-uni-location" required placeholder="City, Country">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="actions" style="margin-top: 30px;">
+                        <button type="submit" class="primary-btn">Save Profile</button>
+                        <button type="button" id="cancelEditBtn" class="secondary-btn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHATBOT -->
+    <div id="chatbot-container" class="chatbot-container" style="display: none;">
+        <div id="chat-window" class="chat-main"
+            style="display: none; position: absolute; bottom: 85px; right: 0; width: 700px; height: 550px; z-index: 3000;">
+            
+            <div class="chat-sidebar">
+                <button id="new-chat-btn" class="new-chat-btn">
+                    <span>+</span> New Chat
+                </button>
+                <div id="chat-history-list" class="chat-history">
+                    <!-- History items will be injected here -->
+                </div>
+            </div>
+
+            <div class="chat-content">
+                <div class="chat-header">
+                    <div class="bot-profile">
+                        <div class="bot-avatar">🤖</div>
+                        <div>
+                            <h3 style="font-size: 1rem;">Academic AI Assistant</h3>
+                            <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
+                                <div class="online"></div>
+                                <span style="color:var(--muted); font-size:0.85rem;">Online</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button id="maximize-chat" class="glass-btn" style="padding: 8px 12px; font-size: 1rem;" title="Maximize">🔳</button>
+                        <button id="close-chat" class="glass-btn" style="padding: 8px 12px; font-size: 1.2rem;">✖️</button>
+                    </div>
+                </div>
+
+                <!-- CHAT BODY -->
+                <div id="chat-messages" class="chat-body">
+                    <!-- Chat messages injected here -->
+                </div>
+
+                <!-- INPUT -->
+                <div class="chat-input">
+                    <input type="text" id="chat-input" placeholder="Ask your AI academic assistant..." autocomplete="off">
+                    <button id="send-chat" class="send-btn">➤</button>
+                </div>
             </div>
         </div>
         <button id="chat-toggle" class="chat-toggle" title="Open AI Assistant">
@@ -158,4 +310,5 @@
 
     <script type="module" src="js/data-view.js"></script>
 </body>
+
 </html>

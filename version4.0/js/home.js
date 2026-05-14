@@ -2,8 +2,9 @@
 import { initAuth, loginWithGoogle, logoutUser } from "./modules/auth.js";
 import { initCloudSync, saveLocalRecords, getLocalRecords, syncToCloud } from "./modules/storage.js";
 import { createSubjectRow, calculateCurrentGPA } from "./modules/calculator.js";
-import { initTheme, toggleUserUI, showAuthPage, hideAuthPage } from "./modules/ui.js";
+import { initTheme, initMenuToggle, toggleUserUI, showAuthPage, hideAuthPage } from "./modules/ui.js";
 import { initChatbot } from "./modules/chatbot.js";
+import { initProfileModal, checkNewUserProfile } from "./modules/profile.js";
 
 let totalSubject = 1;
 let editingId = null;
@@ -17,7 +18,6 @@ const addPlace = document.getElementById("addPlace");
 const resultDisplay = document.getElementById("result");
 const loginBtn = document.getElementById("loginBtn");
 const googleLoginBtn = document.getElementById("googleLoginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
 
 const saveModal = document.getElementById("saveModal");
 const confirmSaveBtn = document.getElementById("confirmSaveBtn");
@@ -29,7 +29,9 @@ const saveWarning = document.getElementById("save-warning");
 // --- Initialization ---
 
 initTheme();
+initMenuToggle();
 initChatbot();
+initProfileModal();
 
 // Initialize first row listener
 const firstScoreInput = document.getElementById("score-1");
@@ -54,6 +56,7 @@ updateProgressBar();
 initAuth((user) => {
     toggleUserUI(user);
     if (user) {
+        checkNewUserProfile(user);
         if (unsubscribeSync) unsubscribeSync();
         unsubscribeSync = initCloudSync(user.uid, (records) => {
             updateProgressBar();
@@ -172,7 +175,6 @@ cancelSaveBtn.addEventListener("click", () => {
 
 loginBtn.addEventListener("click", showAuthPage);
 googleLoginBtn.addEventListener("click", loginWithGoogle);
-logoutBtn.addEventListener("click", logoutUser);
 
 // Handle "Modify Existing" from warning
 document.getElementById("modifyExistingBtn").addEventListener("click", () => {

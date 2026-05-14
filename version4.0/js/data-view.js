@@ -2,8 +2,9 @@
 import { initAuth, loginWithGoogle, logoutUser } from "./modules/auth.js";
 import { initCloudSync, saveLocalRecords, getLocalRecords, syncToCloud } from "./modules/storage.js";
 import { updateAllCharts } from "./modules/charts.js";
-import { initTheme, toggleUserUI, showAuthPage, hideAuthPage } from "./modules/ui.js";
+import { initTheme, initMenuToggle, toggleUserUI, showAuthPage, hideAuthPage } from "./modules/ui.js";
 import { initChatbot } from "./modules/chatbot.js";
+import { initProfileModal, checkNewUserProfile } from "./modules/profile.js";
 
 const savedPlace = document.getElementById("savedPlace");
 const clearAllBtn = document.getElementById("clearAllBtn");
@@ -20,18 +21,20 @@ const recordsSection = document.getElementById("records-section");
 
 const loginBtn = document.getElementById("loginBtn");
 const googleLoginBtn = document.getElementById("googleLoginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
 
 let unsubscribeSync = null;
 
 // --- Initialization ---
 
 initTheme();
+initMenuToggle();
 initChatbot();
+initProfileModal();
 
 initAuth((user) => {
     toggleUserUI(user);
     if (user) {
+        checkNewUserProfile(user);
         if (unsubscribeSync) unsubscribeSync();
         unsubscribeSync = initCloudSync(user.uid, (records) => {
             displaySavedData(records);
@@ -242,4 +245,3 @@ importFile.addEventListener("change", (e) => {
 // Add animations to CSS if needed, but for now this works.
 loginBtn.addEventListener("click", showAuthPage);
 googleLoginBtn.addEventListener("click", loginWithGoogle);
-logoutBtn.addEventListener("click", logoutUser);

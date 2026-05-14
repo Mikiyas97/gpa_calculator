@@ -1,37 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GPA Pro - Calculator</title>
     <meta name="theme-color" content="#0f172a">
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- KaTeX for Math -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/auto-render.min.js"></script>
 </head>
+
 <body>
 
     <!-- NAVBAR -->
     <nav class="navbar">
+        <button id="menu-toggle" class="menu-toggle" aria-label="Toggle Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
         <a href="index.html" class="logo">GPA<span>Pro</span></a>
 
         <div class="nav-links">
             <a href="index.html" class="active">Dashboard</a>
             <a href="data.html">Analytics</a>
-            <a href="print.html">Transcript</a>
         </div>
 
         <div class="nav-actions">
             <button id="theme-toggle" class="glass-btn" title="Toggle Dark/Light Mode">
                 <span class="icon">🌙</span>
             </button>
-            
+
             <button id="loginBtn" class="login-btn">Sign In</button>
-            
+
             <div id="user-info" class="user-info" style="display: none;">
                 <img id="user-photo" src="" alt="Profile" class="user-photo">
                 <span id="user-name" class="user-name"></span>
-                <button id="logoutBtn" class="logout-btn" title="Logout">
-                    <span>🚪</span>
-                </button>
             </div>
         </div>
     </nav>
@@ -42,12 +50,12 @@
             <div class="auth-icon">🔐</div>
             <h2>Secure Your Data</h2>
             <p>Sign in to sync your GPA records across all your devices and keep your data safe in the cloud.</p>
-            
+
             <button id="googleLoginBtn" class="google-btn">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20">
                 <span>Sign in with Google</span>
             </button>
-            
+
             <div class="auth-features">
                 <div class="feature-item">☁️ Cloud Sync</div>
                 <div class="feature-item">📱 Multi-device</div>
@@ -64,7 +72,8 @@
             <div class="card">
                 <div class="section-title">
                     <h2>Semester GPA Calculator</h2>
-                    <span id="current-period" style="color: var(--muted); font-size: 0.9rem; font-weight: 600;">Current Session</span>
+                    <span id="current-period" style="color: var(--muted); font-size: 0.9rem; font-weight: 600;">Current
+                        Session</span>
                 </div>
 
                 <div class="table-wrap">
@@ -107,7 +116,8 @@
                 <div class="card mini-card">
                     <h3>Academic Progress</h3>
                     <p style="color: var(--muted); line-height:1.7; font-size: 0.9rem;">
-                        Track your journey towards academic excellence. Keep maintaining consistent scores to graduate with distinction.
+                        Track your journey towards academic excellence. Keep maintaining consistent scores to graduate
+                        with distinction.
                     </p>
                     <div class="progress">
                         <span id="progress-bar"></span>
@@ -141,7 +151,8 @@
                             </div>
                         </div>
 
-                        <div class="feature" onclick="document.getElementById('theme-toggle').click()" style="cursor: pointer;">
+                        <div class="feature" onclick="document.getElementById('theme-toggle').click()"
+                            style="cursor: pointer;">
                             <div class="feature-icon">🌙</div>
                             <div class="feature-text">
                                 <h4>Dark Mode</h4>
@@ -152,6 +163,118 @@
                 </div>
             </div>
         </section>
+    </div>
+
+    <!-- PROFILE MODAL -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content wide">
+            <!-- VIEW MODE -->
+            <div id="profile-view-mode">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <h2 style="margin: 0;">Profile Details</h2>
+                    <button id="editProfileBtn" class="primary-btn" style="padding: 8px 16px; font-size: 0.9rem;">✏️
+                        Edit
+                        Profile</button>
+                </div>
+
+                <div class="main-grid"
+                    style="padding: 0; gap: 40px; align-items: start; flex-direction: row; text-align: left;">
+                    <div style="flex: 1;">
+                        <h3 style="margin-bottom: 20px; color: var(--primary);">Student Information</h3>
+                        <div id="v-profile-image" class="profile-preview"
+                            style="margin-bottom: 20px; border-style: solid;">
+                            <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                                style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <p style="font-size: 1rem;"><strong>Name:</strong> <span id="v-student-name"
+                                    style="color: var(--muted);">-</span></p>
+                            <p style="font-size: 1rem;"><strong>Program:</strong> <span id="v-student-program"
+                                    style="color: var(--muted);">-</span></p>
+                            <p style="font-size: 1rem;"><strong>Email:</strong> <span id="v-student-email"
+                                    style="color: var(--muted);">-</span></p>
+                            <p style="font-size: 1rem;"><strong>Phone:</strong> <span id="v-student-phone"
+                                    style="color: var(--muted);">-</span></p>
+                        </div>
+                    </div>
+                    <div style="flex: 1;">
+                        <h3 style="margin-bottom: 20px; color: var(--primary2);">University Information</h3>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <p style="font-size: 1rem;"><strong>University:</strong> <span id="v-uni-name"
+                                    style="color: var(--muted);">-</span></p>
+                            <p style="font-size: 1rem;"><strong>College:</strong> <span id="v-uni-college"
+                                    style="color: var(--muted);">-</span></p>
+                            <p style="font-size: 1rem;"><strong>Department:</strong> <span id="v-uni-dept"
+                                    style="color: var(--muted);">-</span></p>
+                            <p style="font-size: 1rem;"><strong>Location:</strong> <span id="v-uni-location"
+                                    style="color: var(--muted);">-</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="actions" style="margin-top: 30px;">
+                    <button type="button" class="secondary-btn close-modal-btn">Close</button>
+                    <button type="button" id="modalLogoutBtn" class="secondary-btn"
+                        style="color: var(--grade-F); border-color: rgba(239, 68, 68, 0.2);">🚪 Logout</button>
+                </div>
+            </div>
+
+            <!-- EDIT MODE -->
+            <div id="profile-edit-mode" style="display: none;">
+                <h2 style="margin-bottom: 20px;">Profile Setup</h2>
+                <form id="profile-form">
+                    <div class="main-grid"
+                        style="padding: 0; gap: 40px; align-items: start; flex-direction: row; text-align: left;">
+                        <!-- Student Info -->
+                        <div style="flex: 1;">
+                            <h3 style="margin-bottom: 20px; color: var(--primary);">Student Information</h3>
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="p-student-name" required placeholder="Enter full name">
+                            </div>
+                            <div class="form-group">
+                                <label>Program / Major</label>
+                                <input type="text" id="p-student-program" required placeholder="e.g. Computer Science">
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" id="p-student-email" required placeholder="email@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="text" id="p-student-phone" required placeholder="+1234567890">
+                            </div>
+                        </div>
+
+                        <!-- University Info -->
+                        <div style="flex: 1;">
+                            <h3 style="margin-bottom: 20px; color: var(--primary2);">University Information</h3>
+                            <div class="form-group">
+                                <label>University Name</label>
+                                <input type="text" id="p-uni-name" required placeholder="Enter university name">
+                            </div>
+                            <div class="form-group">
+                                <label>College</label>
+                                <input type="text" id="p-uni-college" required
+                                    placeholder="e.g. College of Engineering">
+                            </div>
+                            <div class="form-group">
+                                <label>Department</label>
+                                <input type="text" id="p-uni-dept" required placeholder="e.g. Software Engineering">
+                            </div>
+                            <div class="form-group">
+                                <label>Location</label>
+                                <input type="text" id="p-uni-location" required placeholder="City, Country">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="actions" style="margin-top: 30px;">
+                        <button type="submit" class="primary-btn">Save Profile</button>
+                        <button type="button" id="cancelEditBtn" class="secondary-btn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <!-- SAVE MODAL -->
@@ -175,9 +298,11 @@
                     <option value="Semester 2">Semester 2</option>
                 </select>
             </div>
-            <div id="save-warning" class="save-warning" style="display: none; background: rgba(239, 68, 68, 0.1); color: var(--grade-F); padding: 15px; border-radius: 12px; margin-bottom: 20px; font-size: 0.85rem;">
+            <div id="save-warning" class="save-warning"
+                style="display: none; background: rgba(239, 68, 68, 0.1); color: var(--grade-F); padding: 15px; border-radius: 12px; margin-bottom: 20px; font-size: 0.85rem;">
                 <p>A record for this period already exists.</p>
-                <button id="modifyExistingBtn" class="primary-btn" style="padding: 8px 15px; font-size: 0.8rem; margin-top: 10px;">Modify Existing</button>
+                <button id="modifyExistingBtn" class="primary-btn"
+                    style="padding: 8px 15px; font-size: 0.8rem; margin-top: 10px;">Modify Existing</button>
             </div>
             <div class="actions">
                 <button id="confirmSaveBtn" class="primary-btn">Confirm Save</button>
@@ -187,35 +312,50 @@
     </div>
 
     <!-- CHATBOT -->
-    <div id="chatbot-container" class="chatbot-container">
-        <div id="chat-window" class="chat-main" style="display: none; position: absolute; bottom: 85px; right: 0; width: 380px; z-index: 3000;">
-            <div class="chat-header">
-                <div class="bot-profile">
-                    <div class="bot-avatar">🤖</div>
-                    <div>
-                        <h3 style="font-size: 1rem;">Academic AI Assistant</h3>
-                        <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
-                            <div class="online"></div>
-                            <span style="color:var(--muted); font-size:0.85rem;">Online</span>
+    <div id="chatbot-container" class="chatbot-container" style="display: none;">
+        <div id="chat-window" class="chat-main"
+            style="display: none; position: absolute; bottom: 85px; right: 0; width: 700px; height: 550px; z-index: 3000;">
+
+            <div class="chat-sidebar">
+                <button id="new-chat-btn" class="new-chat-btn">
+                    <span>+</span> New Chat
+                </button>
+                <div id="chat-history-list" class="chat-history">
+                    <!-- History items will be injected here -->
+                </div>
+            </div>
+
+            <div class="chat-content">
+                <div class="chat-header">
+                    <div class="bot-profile">
+                        <div class="bot-avatar">🤖</div>
+                        <div>
+                            <h3 style="font-size: 1rem;">Academic AI Assistant</h3>
+                            <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
+                                <div class="online"></div>
+                                <span style="color:var(--muted); font-size:0.85rem;">Online</span>
+                            </div>
                         </div>
                     </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button id="maximize-chat" class="glass-btn" style="padding: 8px 12px; font-size: 1rem;"
+                            title="Maximize">🔳</button>
+                        <button id="close-chat" class="glass-btn"
+                            style="padding: 8px 12px; font-size: 1.2rem;">✖️</button>
+                    </div>
                 </div>
-                <button id="close-chat" class="glass-btn" style="padding: 8px 12px; font-size: 1.2rem;">✖️</button>
-            </div>
 
-            <!-- CHAT BODY -->
-            <div id="chat-messages" class="chat-body">
-                <div class="message bot-message">
-                    👋 Hello Mikiyas! I can help you with GPA predictions,
-                    study planning, course recommendations, and academic advice.
+                <!-- CHAT BODY -->
+                <div id="chat-messages" class="chat-body">
+                    <!-- Chat messages injected here -->
                 </div>
-                <!-- Chat messages injected here -->
-            </div>
 
-            <!-- INPUT -->
-            <div class="chat-input">
-                <input type="text" id="chat-input" placeholder="Ask your AI academic assistant..." autocomplete="off">
-                <button id="send-chat" class="send-btn">➤</button>
+                <!-- INPUT -->
+                <div class="chat-input">
+                    <input type="text" id="chat-input" placeholder="Ask your AI academic assistant..."
+                        autocomplete="off">
+                    <button id="send-chat" class="send-btn">➤</button>
+                </div>
             </div>
         </div>
         <button id="chat-toggle" class="chat-toggle" title="Open AI Assistant">
@@ -224,9 +364,10 @@
     </div>
 
     <footer>
-        © 2026 GPA Pro • Designed with Modern UI/UX
+        © 2026 GPA Pro • Designed and Developed by Mikiyas H.
     </footer>
 
     <script type="module" src="js/home.js"></script>
 </body>
+
 </html>

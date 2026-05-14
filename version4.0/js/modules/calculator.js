@@ -1,5 +1,11 @@
 // GPA Logic and Table Management
 
+function toTitleCase(str) {
+    return str.toLowerCase().split(' ').map(word => {
+        return word.charAt(0).toUpperCase() + word.slice(1);
+    }).join(' ');
+}
+
 export function getGradePoint(score) {
     if (score >= 90) return { letter: 'A+', point: 4.0, class: 'grade-A' };
     if (score >= 85) return { letter: 'A', point: 4.0, class: 'grade-A' };
@@ -64,7 +70,7 @@ export function calculateCurrentGPA(totalSubject) {
             totalPoints += gradeInfo.point * credit;
             totalCredits += credit;
             subjects.push({ 
-                name: nameInput.value.trim() || `Subject ${i}`, 
+                name: toTitleCase(nameInput.value.trim()) || `Subject ${i}`, 
                 credit, 
                 score, 
                 grade: gradeOutput.value 

@@ -1,10 +1,29 @@
 // Shared UI Components and Theme Management
 
+export function initMenuToggle() {
+    const menuToggle = document.getElementById("menu-toggle");
+    const navLinks = document.querySelector(".nav-links");
+    if (!menuToggle || !navLinks) return;
+
+    menuToggle.addEventListener("click", () => {
+        navLinks.classList.toggle("active");
+        menuToggle.classList.toggle("active");
+    });
+
+    // Close menu when clicking a link
+    navLinks.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", () => {
+            navLinks.classList.remove("active");
+            menuToggle.classList.remove("active");
+        });
+    });
+}
+
 export function initTheme() {
     const themeToggle = document.getElementById("theme-toggle");
     if (!themeToggle) return;
 
-    const savedTheme = localStorage.getItem("theme") || "light";
+    const savedTheme = localStorage.getItem("theme") || "dark";
     setTheme(savedTheme);
 
     themeToggle.addEventListener("click", () => {
@@ -37,7 +56,7 @@ export function toggleUserUI(user) {
         if (loginBtn) loginBtn.style.display = "none";
         if (userInfo) {
             userInfo.style.display = "flex";
-            userPhoto.src = user.photoURL || "assets/icon.svg";
+            userPhoto.src = user.photoURL || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
             userName.textContent = user.displayName || "User";
         }
         if (authPage) authPage.style.display = "none";
