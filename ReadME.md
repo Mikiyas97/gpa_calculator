@@ -12,7 +12,7 @@
 ## ✨ Key Features
 
 ### 🤖 AI Academic Advisor
-Powered by **Google Gemini 1.5 Flash**, the built-in advisor analyzes your academic history to provide personalized feedback, identify weak subjects, and suggest improvement strategies. It maintains chat history synced to your account.
+Powered by **Google Gemini 2.5 Flash**, the built-in advisor analyzes your academic history to provide personalized feedback, identify weak subjects, and suggest improvement strategies. It maintains chat history synced to your account.
 
 ### 🎯 "Road to Success" (Target GPA)
 Enter your desired graduation GPA, and the AI will calculate the exact performance needed in your remaining semesters. It categorizes your goal as **Possible**, **Challenging**, or **Impossible** based on real mathematical feasibility.
